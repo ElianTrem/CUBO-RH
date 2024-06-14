@@ -81,7 +81,7 @@ class LoginForm(QWidget):
                 color: #000000;
                 border-radius: 6px;
                 border: none;
-                min-width: 900px;
+                min-width: 150px;
                 max-height: 50px;
             }
             QPushButton:hover {

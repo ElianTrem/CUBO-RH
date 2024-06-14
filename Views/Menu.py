@@ -1,10 +1,54 @@
 import sys
-import os
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 from PyQt5.QtCore import Qt
 import xml.etree.ElementTree as ET
+from DescForm import Descriptor
 
 class OpcionMenu(QPushButton):
+    def __init__(self, text, contenedor_layout, parent=None):
+        super().__init__(text, parent)
+        self.contenedor_layout = contenedor_layout  # Guardar el contenedor_layout como atributo
+        self.setCheckable(True)
+        self.setStyleSheet("""
+            QPushButton {
+                background-color: #FFFFFF;
+                font-size: 14px;
+                color: #000000;
+                border-radius: 12px;
+                min-width: 200px;
+                max-height: 35px;
+                min-height: 35px;
+            }
+            QPushButton:hover {
+                background-color: #F0F0F0;
+            }
+            QPushButton:checked {
+                background-color: #9ED7A2;
+            }
+        """)
+        self.clicked.connect(self.on_clicked)
+
+    def on_clicked(self):
+        # Desmarcar todos los botones del grupo
+        for button in button_group:
+            button.setChecked(False)
+        # Marcar el botón actual
+        self.setChecked(True)
+        # Registrar el botón presionado
+        print(f"Botón '{self.text()}' presionado")
+        if self.text() == "Descriptor de puestos":
+            #valida que no haya otro widget en el contenedor
+            if self.contenedor_layout.count() == 0:
+                self.contenedor_layout.addWidget(Descriptor())
+        else:
+            # Eliminar todos los widgets del contenedor dinámico
+            while self.contenedor_layout.count():
+                child = self.contenedor_layout.takeAt(0)
+                if child.widget():
+                    child.widget().deleteLater()
+            
+
+class cerrarSesion(QPushButton):
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
         self.setCheckable(True)
@@ -14,15 +58,16 @@ class OpcionMenu(QPushButton):
                 font-size: 14px;
                 color: #000000;
                 border-radius: 12px;
-                min-width: 200px;
+                border: 1px solid #E11313;
+                min-width: 20px;
                 max-height: 50px;
                 min-height: 37px;
             }
             QPushButton:hover {
-                background-color: #F0F0F0;
+                background-color: #E11313;
             }
-            QPushButton:checked {
-                background-color: #9ED7A2;
+            QPushButton:pressed {
+                background-color: #CA4040;
             }
         """)
 
@@ -54,11 +99,12 @@ class MenuForm(QWidget):
 
         # Cargar el menú desde el archivo XML
         menu_items = self.load_menu_from_xml('Menus/Admin.xml')
-        self.generate_menu_buttons(menu_items, navbar_layout)
+        self.generate_menu_buttons(menu_items, navbar_layout, contenedor_layout)
         
 
         card_layout.addWidget(Navbar)
         card_layout.addWidget(ContenedorDinamico)
+
 
         # Establecer el layout principal de la ventana
         main_layout = QVBoxLayout(self)
@@ -76,24 +122,21 @@ class MenuForm(QWidget):
                 menu_items[-1]['options'].append(option.text)
         return menu_items
 
-    def generate_menu_buttons(self, menu_items, layout):
-        button_group = []
+    def generate_menu_buttons(self, menu_items, layout, contenedor_layout):
+        global button_group  # Variable global para el grupo de botones
+        button_group = []  # Inicializar el grupo de botones
         for section in menu_items:
             title_label = QLabel(section['title'])
             title_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #000000;")
             title_label.setAlignment(Qt.AlignCenter)
             layout.addWidget(title_label)
             for option in section['options']:
-                button = OpcionMenu(option)
-                button.clicked.connect(lambda _, b=button: self.on_button_clicked(b, button_group))
+                button = OpcionMenu(option, contenedor_layout)  # Pasar contenedor_layout como parámetro
                 layout.addWidget(button)
-                button_group.append(button)
-        layout.addStretch()  # Agregar un stretch al final para empujar los elementos hacia arriba
+                button_group.append(button)  # Agregar botón al grupo
 
-    def on_button_clicked(self, clicked_button, button_group):
-        for button in button_group:
-            if button != clicked_button:
-                button.setChecked(False)
+        layout.addWidget(cerrarSesion("Cerrar Sesión"))
+        layout.addStretch()  # Agregar un stretch al final para empujar los elementos hacia arriba
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
