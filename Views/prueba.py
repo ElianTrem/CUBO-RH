@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButto
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
-from dialog import LoadingDialog, QuickAlert  # Importar los diálogos
+from dialog import LoadingDialog, QuickAlert  # Importar libreria de diálogos
 
 class LoginForm(QWidget):
     def __init__(self):
@@ -139,14 +139,14 @@ class WorkerThread(QThread):
         self.operation_function = operation_function
 
     def run(self):
-        # Execute the long-running operation function
+        # Ejectuar la operación larga y emitir la señal con el resultado que es un booleano
         result = self.operation_function()
-        self.threadSignal.emit(result)  # Emit signal with result
+        self.threadSignal.emit(result)  # Emite la señal con el resultado de la operación
 
 def main():
     app = QApplication(sys.argv)
     ex = LoginForm()
-    ex.showMaximized()  # Mover showMaximized aquí
+    ex.showMaximized()  
     sys.exit(app.exec_())
 
 

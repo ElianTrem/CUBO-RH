@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <section title="Gestión de Reclutamiento">
+        <option>Descriptor de puestos</option>
+        <option>Expediente de trabajadores</option>
+        <option>Reclutamiento</option>
+        <option>Seguimiento de candidatos</option>
+    </section>
+    <section title="Gestión de nominas">
+        <option>Salario</option>
+        <option>Nomina mensual</option>
+        <option>Nomina Anual</option>
+    </section>
+    <section title="Gestión de horarios">
+        <option>Ausencias</option>
+        <option>Horas extras</option>
+    </section>
+    <section title="Evaluación de personal">
+        <option>Ver mis Evaluaciones</option>
+        <option>Realizar Evaluación</option>
+        <option>Reporte de Evaluaciones</option>
+    </section>
+</menu>

@@ -25,34 +25,34 @@ class QuickAlert(QDialog):
         super().__init__(parent)
         self.setWindowTitle(title)
         self.setFixedSize(500, 250)
-        self.setWindowFlag(Qt.FramelessWindowHint)  # Remove title bar
-        self.setStyleSheet("background-color: white;")  # Set white background
+        self.setWindowFlag(Qt.FramelessWindowHint)  # Quita la barra de título
+        self.setStyleSheet("background-color: white;")  # bg a blanco
 
-        layout = QVBoxLayout(self)  # Main layout for the dialog
+        layout = QVBoxLayout(self)  # Layout principal
         self.setLayout(layout)
 
         # GIF Widget
-        animation_widget = GifAnimationWidget(f'gifs/{alert_type}_animation.gif')  # Path to your GIF file
+        animation_widget = GifAnimationWidget(f'gifs/{alert_type}_animation.gif') 
         layout.addWidget(animation_widget, alignment=Qt.AlignCenter)
 
         # Message Label
         message_label = QLabel(message)
-        message_label.setFont(QFont("Arial", weight=QFont.Bold))  # Set bold font
-        message_label.setAlignment(Qt.AlignCenter)  # Align text center
+        message_label.setFont(QFont("Arial", weight=QFont.Bold))  # Lo cambia a negrita
+        message_label.setAlignment(Qt.AlignCenter)  # Lo centra
         layout.addWidget(message_label)
 
         # Buttons Layout
         button_layout = QHBoxLayout()
         ok_button = QPushButton('OK')
         ok_button.setStyleSheet("border-radius: 4px; color: white; border: 0px; height: 40px; width: 100px;")
-        ok_button.setFont(QFont("Arial", weight=QFont.Bold))  # Set bold font
+        ok_button.setFont(QFont("Arial", weight=QFont.Bold))  # Lo cambia a negrita
         ok_button.clicked.connect(self.accept)
         cancel_button = QPushButton('Cancelar')
         cancel_button.setStyleSheet("border-radius: 4px; color: white; border: 0px; height: 40px; width: 100px;")
-        cancel_button.setFont(QFont("Arial", weight=QFont.Bold))  # Set bold font
+        cancel_button.setFont(QFont("Arial", weight=QFont.Bold))  # Lo cambia a negrita
         cancel_button.clicked.connect(self.reject)
 
-        # Set button color based on alert type
+        # Coloca el color en base al tipo de alerta
         if alert_type == 'error':
             ok_button.setStyleSheet("background-color: red;" + ok_button.styleSheet())
             cancel_button.setStyleSheet("background-color: gray;" + cancel_button.styleSheet())
@@ -72,20 +72,20 @@ class LoadingDialog(QDialog):
         super().__init__()
         self.setWindowTitle('Cargando...')
         self.setFixedSize(300, 150)
-        self.setWindowFlag(Qt.FramelessWindowHint)  # Remove title bar
-        self.setStyleSheet("background-color: white;")  # Set white background
+        self.setWindowFlag(Qt.FramelessWindowHint)  #  Quita la barra de título
+        self.setStyleSheet("background-color: white;")  # bg a blanco
 
         layout = QVBoxLayout(self)  # Main layout for the dialog
         self.setLayout(layout)
 
         # GIF Widget
-        animation_widget = GifAnimationWidget('gifs/loading_animation.gif')  # Path to your GIF file
+        animation_widget = GifAnimationWidget('gifs/loading_animation.gif')  # navegar a la carpeta gifs
         layout.addWidget(animation_widget, alignment=Qt.AlignCenter)
 
         # Message Label
         message_label = QLabel('Espere por favor...')
-        message_label.setFont(QFont("Arial", weight=QFont.Bold))  # Set bold font
-        message_label.setAlignment(Qt.AlignCenter)  # Align text center
+        message_label.setFont(QFont("Arial", weight=QFont.Bold))  # Lo cambia a negrita
+        message_label.setAlignment(Qt.AlignCenter)  #  Lo centra
         layout.addWidget(message_label)
 
 class WorkerThread(QThread):
@@ -96,7 +96,7 @@ class WorkerThread(QThread):
         self.operation_func = operation_func
 
     def run(self):
-        # Execute the operation function and emit the result
+        # Correr la operación larga y emitir la señal con el resultado que es un booleano
         result = self.operation_func()
         self.threadSignal.emit(result)
 
@@ -118,9 +118,9 @@ def main():
 
 def start_loading():
     def long_running_operation():
-        # Simulate a long-running operation
+        #  Simular una operación larga (Se cambiará por la operación necesaria)
         time.sleep(5)
-        return True  # Return True to indicate success
+        return True  #  Retornar True para indicar éxito
 
     loading_dialog = LoadingDialog()
     worker = WorkerThread(long_running_operation)
