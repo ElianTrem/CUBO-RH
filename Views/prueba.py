@@ -1,15 +1,17 @@
 import sys
-import time
+import psycopg2
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
 
 from dialog import LoadingDialog, QuickAlert  # Importar libreria de diálogos
+from Menu import MenuForm
 
 class LoginForm(QWidget):
     def __init__(self):
         super().__init__()
         self.loading_dialog = None  # Inicializar la referencia al diálogo de carga
+        self.worker_thread = None  # Mantener referencia al hilo de trabajo
         self.initUI()
 
     def initUI(self):
@@ -81,7 +83,7 @@ class LoginForm(QWidget):
                 color: #000000;
                 border-radius: 6px;
                 border: none;
-                min-width: 900px;
+                min-width: 150px;
                 max-height: 50px;
             }
             QPushButton:hover {
@@ -101,13 +103,12 @@ class LoginForm(QWidget):
         form_layout.addLayout(button_layout)  # Agregar el layout horizontal al layout del formulario
 
         main_layout.addWidget(card_widget)
-
-        # Conectar el clic del botón de inicio de sesión al método start_loading
         button_login.clicked.connect(self.start_loading)
 
     def start_loading(self):
         email = self.line_edit_email.text()
         password = self.line_edit_password.text()
+        loading_dialog = LoadingDialog()
 
         if not email or not password:
             error_dialog = QuickAlert('error', 'Error', 'Por favor, complete todos los campos.')
@@ -115,21 +116,55 @@ class LoginForm(QWidget):
             return
 
         def long_running_operation():
-            # Simulate a long-running operation
-            time.sleep(5)
-            return True  # Return True to indicate success
+            # Conectar a la base de datos y verificar credenciales
+            try:
+                conn = psycopg2.connect(
+                    dbname='BDCUBO',
+                    user='postgres',
+                    password='postgres123',
+                    host='localhost',  # Cambia esto si tu base de datos está en otro servidor
+                    port='5432'
+                )
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM usuarios WHERE correo=%s AND contrasena=%s", (email, password))
+                user = cursor.fetchone()
+                conn.close()
+                if user:
+                    return True
+                else:
+                    return False
+            except psycopg2.Error as e:
+                print(f"Error al conectar a la base de datos: {e}")
+                return False
+
         
-        loading_dialog = LoadingDialog()
+        self.loading_dialog = LoadingDialog()
         worker = WorkerThread(long_running_operation)
-        worker.threadSignal.connect(loading_dialog.accept)
+        worker.threadSignal.connect(self.handle_login_result)
         worker.start()
-        loading_dialog.exec_()
+        QTimer.singleShot(3000, self.loading_dialog.close)
+        self.loading_dialog.show()
 
-        # Después de un tiempo (simulando una operación de inicio de sesión)
-        # Mostrar el diálogo de éxito
-        success_dialog = QuickAlert('success', 'Éxito', 'Inicio de sesión exitoso')
-        success_dialog.exec_()
+        # Usar QTimer para cerrar el LoadingDialog después de un tiempo
+        
 
+    def handle_login_result(self, success):
+        if success:
+            success_dialog = QuickAlert('success', 'Éxito', 'Inicio de sesión exitoso')
+            success_dialog.exec_()
+            self.main_window = MenuForm()  # Crear una instancia de la ventana principal
+            self.main_window.showMaximized()  # Mostrar la ventana principal maximizada
+            self.close()  # Cerrar la ventana actual de inicio de sesión
+        else:
+            error_dialog = QuickAlert('error', 'Error', 'Correo electrónico o contraseña incorrectos.')
+            error_dialog.exec_()
+
+    def closeEvent(self, event):
+        # Asegurarse de detener el hilo antes de cerrar la ventana
+        if self.worker_thread and self.worker_thread.isRunning():
+            self.worker_thread.quit()
+            self.worker_thread.wait()
+        event.accept()
 
 class WorkerThread(QThread):
     threadSignal = pyqtSignal(bool)
@@ -139,7 +174,7 @@ class WorkerThread(QThread):
         self.operation_function = operation_function
 
     def run(self):
-        # Ejectuar la operación larga y emitir la señal con el resultado que es un booleano
+        # Ejecutar la operación larga y emitir la señal con el resultado que es un booleano
         result = self.operation_function()
         self.threadSignal.emit(result)  # Emite la señal con el resultado de la operación
 
@@ -148,7 +183,6 @@ def main():
     ex = LoginForm()
     ex.showMaximized()  
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     main()
