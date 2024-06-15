@@ -2,15 +2,14 @@ import sys
 import psycopg2
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
-from dialog import LoadingDialog, QuickAlert  # Importar libreria de diálogos
+from dialog import QuickAlert  # Importar libreria de diálogos
 from Menu import MenuForm
 
 class LoginForm(QWidget):
     def __init__(self):
         super().__init__()
-        self.loading_dialog = None  # Inicializar la referencia al diálogo de carga
         self.worker_thread = None  # Mantener referencia al hilo de trabajo
         self.initUI()
 
@@ -108,7 +107,6 @@ class LoginForm(QWidget):
     def start_loading(self):
         email = self.line_edit_email.text()
         password = self.line_edit_password.text()
-        loading_dialog = LoadingDialog()
 
         if not email or not password:
             error_dialog = QuickAlert('error', 'Error', 'Por favor, complete todos los campos.')
@@ -137,16 +135,9 @@ class LoginForm(QWidget):
                 print(f"Error al conectar a la base de datos: {e}")
                 return False
 
-        
-        self.loading_dialog = LoadingDialog()
-        worker = WorkerThread(long_running_operation)
-        worker.threadSignal.connect(self.handle_login_result)
-        worker.start()
-        QTimer.singleShot(3000, self.loading_dialog.close)
-        self.loading_dialog.show()
-
-        # Usar QTimer para cerrar el LoadingDialog después de un tiempo
-        
+        self.worker_thread = WorkerThread(long_running_operation)
+        self.worker_thread.threadSignal.connect(self.handle_login_result)
+        self.worker_thread.start()
 
     def handle_login_result(self, success):
         if success:

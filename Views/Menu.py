@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPu
 from PyQt5.QtCore import Qt
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
+from Expediente_Form import Expediente
 
 class OpcionMenu(QPushButton):
     def __init__(self, text, contenedor_layout, parent=None):
@@ -40,6 +41,10 @@ class OpcionMenu(QPushButton):
             #valida que no haya otro widget en el contenedor
             if self.contenedor_layout.count() == 0:
                 self.contenedor_layout.addWidget(Descriptor())
+        if self.text() == "Expediente de trabajadores":
+            #valida que no haya otro widget en el contenedor
+            if self.contenedor_layout.count() == 0:
+                self.contenedor_layout.addWidget(Expediente())
         else:
             # Eliminar todos los widgets del contenedor dinámico
             while self.contenedor_layout.count():
