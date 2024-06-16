@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPu
 from PyQt5.QtCore import Qt
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
-from Expediente_Form import Expediente
+from Expediente_Form import Expediente 
 
 class OpcionMenu(QPushButton):
     def __init__(self, text, contenedor_layout, parent=None):
@@ -37,21 +37,20 @@ class OpcionMenu(QPushButton):
         self.setChecked(True)
         # Registrar el botón presionado
         print(f"Botón '{self.text()}' presionado")
+
+        # Eliminar todos los widgets del contenedor dinámico
+        while self.contenedor_layout.count():
+            child = self.contenedor_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
         if self.text() == "Descriptor de puestos":
-            #valida que no haya otro widget en el contenedor
-            if self.contenedor_layout.count() == 0:
-                self.contenedor_layout.addWidget(Descriptor())
-        if self.text() == "Expediente de trabajadores":
-            #valida que no haya otro widget en el contenedor
-            if self.contenedor_layout.count() == 0:
-                self.contenedor_layout.addWidget(Expediente())
+            self.contenedor_layout.addWidget(Descriptor())
+        elif self.text() == "Expediente de trabajadores":
+            self.contenedor_layout.addWidget(Expediente())
         else:
-            # Eliminar todos los widgets del contenedor dinámico
-            while self.contenedor_layout.count():
-                child = self.contenedor_layout.takeAt(0)
-                if child.widget():
-                    child.widget().deleteLater()
-            
+            # Agregar un widget vacío en caso de que no coincida con ninguna opción
+            self.contenedor_layout.addWidget(QWidget())
 
 class cerrarSesion(QPushButton):
     def __init__(self, text, parent=None):
@@ -100,16 +99,14 @@ class MenuForm(QWidget):
         navbar_layout = QVBoxLayout(Navbar)
         navbar_layout.setSpacing(8)  # Espacio de 20 px entre elementos
         navbar_layout.setAlignment(Qt.AlignTop)  # Alinear elementos en la parte superior
-        contenedor_layout = QVBoxLayout(ContenedorDinamico)
+        self.contenedor_layout = QVBoxLayout(ContenedorDinamico)
 
         # Cargar el menú desde el archivo XML
         menu_items = self.load_menu_from_xml('Menus/Admin.xml')
-        self.generate_menu_buttons(menu_items, navbar_layout, contenedor_layout)
-        
+        self.generate_menu_buttons(menu_items, navbar_layout, self.contenedor_layout)
 
         card_layout.addWidget(Navbar)
         card_layout.addWidget(ContenedorDinamico)
-
 
         # Establecer el layout principal de la ventana
         main_layout = QVBoxLayout(self)
