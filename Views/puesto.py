@@ -66,6 +66,9 @@ class DropDown(QPushButton):
             QPushButton:pressed {
                 background-color: #9ED7A2;
             }
+            QPushButton::menu-indicator {
+                subcontrol-position: right center;
+            }
         """)
         # cargo los departamentos desde la base de datos
         self.departamentos = []
@@ -81,17 +84,41 @@ class DropDown(QPushButton):
             cursor.execute("SELECT nombre FROM departamentos")
             self.departamentos = cursor.fetchall()
             conn.close()
+            # Mensaje de depuración
+            print("Departamentos cargados:", self.departamentos)
         except psycopg2.Error as e:
             print(f"Error al conectar a la base de datos: {e}")
         self.menu = QMenu()
+        self.actions = []
         for departamento in self.departamentos:
-            self.menu.addAction(departamento[0])
+            action = QAction(departamento[0], self)
+            action.triggered.connect(
+                lambda checked, text=departamento[0]: self.on_triggered(text))
+            self.actions.append(action)
+            self.menu.addAction(action)
+        self.menu.setStyleSheet("""
+            QMenu {                
+                background-color: #FFFFFF;  /* Color de fondo del menú */
+                color: #000000;
+                border-radius: 12px;
+                max-width: 300px; 
+                min-width: 300px;
+            }
+            QMenu::item {
+                background-color: #F0F0F0;
+                color: #000000;
+                max-width: 300px; 
+                min-width: 300px;
+            }
+            QMenu::item:selected {
+                background-color: #9ED7A2;
+            }
+        """)
         self.setMenu(self.menu)
-        self.menu.triggered.connect(self.on_triggered)
 
-    def on_triggered(self, action):
-        print(f"Departamento seleccionado: {action.text()}")
-        self.setText(action.text())
+    def on_triggered(self, text):
+        print(f"Departamento seleccionado: {text}")  # Mensaje de depuración
+        self.setText(text)
         self.setChecked(False)
 
 
@@ -116,6 +143,7 @@ class MainWindow(QMainWindow):
                 max-width: 200px;
                 max-height: 50px;
                 min-height: 37px;
+                text-align: center;
             }
             QPushButton:hover {
                 background-color: #7FC88B;
@@ -140,7 +168,6 @@ class MainWindow(QMainWindow):
                 min-height: 37px;
             }
         """)
-
         # Create a dropdown for departments
         self.departments_label = QLabel("Departamento:")
         self.departments_dropdown = DropDown("Seleccionar Departamento")
@@ -209,7 +236,6 @@ class MainWindow(QMainWindow):
         </body>
         </html>
         """
-
         self.webview.setHtml(html_content)
 
     def save_content(self):

@@ -8,8 +8,6 @@
     </section>
     <section title="Gestión de nominas">
         <option>Empleado</option>
-        <option>Nomina mensual</option>
-        <option>Nomina Anual</option>
     </section>
     <section title="Gestión de horarios">
         <option>Ausencias</option>
