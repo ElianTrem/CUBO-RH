@@ -1,0 +1,69 @@
+<h1>Información del Puesto</h1>
+<ul>
+    <li><strong>Título del Puesto:</strong> Gestor de Centro de Cómputo</li>
+    <li><strong>Departamento:</strong> Centro de Cómputo y Data Center</li>
+    <li><strong>Supervisor Inmediato:</strong> Coordinador local</li>
+    <li><strong>Edad:</strong> 18 min – 45 max</li>
+</ul>
+<h2>RESUMEN DEL PUESTO</h2>
+<p>
+    El Gestor de Centro de Cómputo es responsable de la administración, supervisión y mantenimiento del centro de cómputo del Centro Urbano de Bienestar y Oportunidades (CUBO). Este rol tiene como objetivo garantizar el funcionamiento óptimo de los equipos informáticos y brindar soporte técnico a los usuarios, facilitando el acceso a la tecnología y fomentando el desarrollo de habilidades digitales entre los miembros de la comunidad.
+</p>
+<h2>REQUISITOS DE EDUCACIÓN Y EXPERIENCIA</h2>
+<ul>
+    <li><strong>Educación:</strong> Licenciatura en Informática, Sistemas de Información, Ingeniería en Computación o carrera afín.</li>
+    <li><strong>Experiencia:</strong> Mínimo 2 años de experiencia en la gestión de centros de cómputo o roles similares.</li>
+    <li><strong>Habilidades:</strong>
+        <ul>
+            <li>Administración de redes y sistemas.</li>
+            <li>Mantenimiento y reparación de hardware y software.</li>
+            <li>Habilidad para resolver problemas técnicos y brindar soporte al usuario.</li>
+            <li>Conocimiento en la gestión de bases de datos y servidores.</li>
+            <li>Capacidad para impartir talleres y capacitación en tecnología.</li>
+        </ul>
+    </li>
+</ul>
+<h2>RESPONSABILIDADES CLAVE</h2>
+<ol>
+    <li>
+        <strong>Administración y Mantenimiento de Equipos:</strong>
+        <ul>
+            <li>Supervisar y mantener el funcionamiento adecuado de todos los equipos informáticos del centro.</li>
+            <li>Realizar mantenimiento preventivo y correctivo de hardware y software.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Soporte Técnico:</strong>
+        <ul>
+            <li>Brindar asistencia técnica a los usuarios del centro de cómputo.</li>
+            <li>Resolver problemas técnicos y consultas relacionadas con el uso de los equipos.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Gestión de Redes y Sistemas:</strong>
+        <ul>
+            <li>Administrar las redes locales y sistemas operativos del centro.</li>
+            <li>Asegurar la seguridad y privacidad de los datos y sistemas informáticos.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Capacitación y Educación:</strong>
+        <ul>
+            <li>Impartir talleres y cursos sobre el uso de tecnología y herramientas informáticas.</li>
+            <li>Fomentar el desarrollo de habilidades digitales entre los miembros de la comunidad.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Coordinación de Actividades Tecnológicas:</strong>
+        <ul>
+            <li>Planificar y coordinar actividades tecnológicas y educativas dentro del centro de cómputo.</li>
+            <li>Colaborar con otros departamentos para integrar la tecnología en sus programas y servicios.</li>
+        </ul>
+    </li>
+</ol>
+<h2>CUALIDADES PERSONALES NECESARIAS</h2>
+<ul>
+    <li><strong>Interés en la Tecnología:</strong> Pasión por la informática y el desarrollo tecnológico.</li>
+    <li><strong>Habilidades de Comunicación:</strong> Capacidad para explicar conceptos técnicos de manera clara y accesible.</li>
+    <li><strong>Proactividad y Resolución de Problemas:</strong> Habilidad para identificar y solucionar problemas técnicos de manera eficiente.</li>
+</ul>

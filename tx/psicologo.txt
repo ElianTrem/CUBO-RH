@@ -1,0 +1,62 @@
+<h1>Información del Puesto</h1>
+<ul>
+    <li><strong>Título del Puesto:</strong> Psicólogo</li>
+    <li><strong>Departamento:</strong> Administrativo</li>
+    <li><strong>Supervisor Inmediato:</strong> Coordinador local</li>
+    <li><strong>Edad:</strong> 18 - 45 años</li>
+</ul>
+<h2>RESUMEN DEL PUESTO</h2>
+<p>
+    Proveer apoyo psicológico integral a los jóvenes y niños del CUBO, promoviendo su bienestar emocional, mental y social. Desarrollar e implementar programas de intervención y prevención que contribuyan al desarrollo personal y comunitario.
+</p>
+<h2>REQUISITOS DE EDUCACIÓN Y EXPERIENCIA</h2>
+<ul>
+    <li><strong>Educación:</strong> Licenciatura en Psicología, preferiblemente con especialización en Psicología Clínica o Educativa.</li>
+    <li><strong>Experiencia:</strong> Mínimo de dos años de experiencia en roles similares trabajando con jóvenes y niños en contextos comunitarios o educativos.</li>
+    <li><strong>Habilidades:</strong>
+        <ul>
+            <li>Excelentes habilidades de comunicación y escucha activa.</li>
+            <li>Capacidad para trabajar en equipo.</li>
+            <li>Empatía y sensibilidad hacia las necesidades de los jóvenes.</li>
+            <li>Habilidad para diagnosticar y tratar problemas psicológicos.</li>
+            <li>Capacidad para desarrollar e implementar programas de intervención.</li>
+        </ul>
+    </li>
+</ul>
+<h2>RESPONSABILIDADES CLAVE</h2>
+<ol>
+    <li>
+        <strong>Evaluación y Diagnóstico:</strong>
+        <ul>
+            <li>Realizar evaluaciones psicológicas a los usuarios para identificar necesidades y problemas emocionales, conductuales y sociales.</li>
+            <li>Diagnosticar trastornos psicológicos y desarrollar planes de intervención personalizados.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Intervención y Terapia:</strong>
+        <ul>
+            <li>Proporcionar terapia individual y grupal para abordar problemas emocionales, conductuales y sociales.</li>
+            <li>Implementar programas de intervención en crisis y ofrecer apoyo en situaciones de emergencia.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Prevención y Promoción de la Salud Mental:</strong>
+        <ul>
+            <li>Desarrollar e implementar programas de prevención dirigidos a reducir el riesgo de problemas de salud mental y promover el bienestar.</li>
+            <li>Organizar talleres y charlas educativas sobre temas de salud mental y habilidades para la vida.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Asesoramiento y Orientación:</strong>
+        <ul>
+            <li>Brindar orientación y apoyo a las familias de los usuarios para mejorar el entorno familiar y el desarrollo de los jóvenes.</li>
+            <li>Trabajar en colaboración con otros profesionales del CUBO para asegurar un enfoque integral y multidisciplinario.</li>
+        </ul>
+    </li>
+</ol>
+<h2>CUALIDADES PERSONALES NECESARIAS</h2>
+<ul>
+    <li><strong>Interés en el bienestar de las personas:</strong> Compromiso con la promoción del bienestar emocional y mental.</li>
+    <li><strong>Paciencia y empatía:</strong> Capacidad para comprender y apoyar las necesidades emocionales de los usuarios.</li>
+    <li><strong>Capacidad para trabajar en un entorno dinámico:</strong> Flexibilidad y adaptabilidad ante diferentes situaciones y desafíos.</li>
+</ul>

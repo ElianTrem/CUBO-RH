@@ -1,69 +1,175 @@
 import sys
-import markdown
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QTextBrowser, QHBoxLayout
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QTextCursor 
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton,
+    QLabel, QLineEdit, QMessageBox, QMenu, QAction
+)
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtCore import QUrl, QObject, pyqtSlot
+from PyQt5.QtWebChannel import QWebChannel
+import psycopg2
 
-class MarkdownEditor(QWidget):
-    def __init__(self, markdown_file):
+class ContentReceiver(QObject):
+    @pyqtSlot(str)
+    def receiveContent(self, content):
+        print("Content received from CKEditor:", content)
+        # Verificar si se ha ingresado el nombre del puesto
+        if window.job_title_input.text() == "":
+            QMessageBox.critical(window, "Error", "Por favor ingrese el nombre del puesto antes de guardar.")
+        else:
+            # Guardar el contenido en un archivo
+            job_title = window.job_title_input.text()
+            with open(f"../../tx/{job_title}.txt", "w", encoding="utf-8") as file:
+                file.write(content)
+                QMessageBox.information(window, "Éxito", "Contenido guardado correctamente.")
+#Creamos una clase dropdown para mostrar los departamentos
+class DropDown(QPushButton):
+    def __init__(self, text, parent=None):
+        super().__init__(text, parent)
+        self.setCheckable(True)
+        self.setStyleSheet("""
+            QPushButton {
+                background-color: #FFFFFF;
+                font-size: 14px;
+                color: #000000;
+                border-radius: 12px;
+                max-width: 200px;
+                max-height: 50px;
+                min-height: 37px;
+            }
+            QPushButton:hover {
+                background-color: #F0F0F0;
+            }
+            QPushButton:pressed {
+                background-color: #9ED7A2;
+            }
+        """)
+        #cargo los departamentos desde la base de datos
+        self.departamentos = []
+        try:
+            conn = psycopg2.connect(
+            dbname='BDCUBO',
+            user='postgres',
+            password='postgres123',
+            host='localhost',
+            port='5432'
+            )
+            cursor = conn.cursor()
+            cursor.execute("SELECT nombre FROM departamentos")
+            self.departamentos = cursor.fetchall()
+            conn.close()
+        except psycopg2.Error as e:
+            print(f"Error al conectar a la base de datos: {e}")
+        self.menu = QMenu()
+        for departamento in self.departamentos:
+            self.menu.addAction(departamento[0])
+        self.setMenu(self.menu)
+        self.menu.triggered.connect(self.on_triggered)
+    def on_triggered(self, action):
+        print(f"Departamento seleccionado: {action.text()}")
+        self.setText(action.text())
+        self.setChecked(False)
+
+class MainWindow(QMainWindow):
+    def __init__(self):
         super().__init__()
-        self.markdown_file = markdown_file
-        self.initUI()
+        self.setWindowTitle("Agregar Puesto")
 
-    def initUI(self):
-        self.setWindowTitle('Markdown Editor')
+        # Create the WebView
+        self.webview = QWebEngineView()
+        self.load_ckeditor()
 
-        # Layouts
-        main_layout = QHBoxLayout()
-        editor_layout = QVBoxLayout()
-        preview_layout = QVBoxLayout()
+        # Create a Save button
+        self.save_button = QPushButton("Save")
+        self.save_button.clicked.connect(self.save_content)
 
-        # QTextEdit for editing Markdown
-        self.text_edit = QTextEdit(self)
-        self.text_edit.textChanged.connect(self.update_preview)
-        editor_layout.addWidget(self.text_edit)
+        # Create a QLineEdit for job title input
+        self.job_title_label = QLabel("Nombre del Puesto:")
+        self.job_title_input = QLineEdit()
 
-        # QTextBrowser to display Markdown preview
-        self.text_browser = QTextBrowser(self)
-        preview_layout.addWidget(self.text_browser)
+        # Create a dropdown for departments
+        self.departments_label = QLabel("Departamento:")
+        self.departments_dropdown = DropDown("Seleccionar Departamento")
 
-        main_layout.addLayout(editor_layout)
-        main_layout.addLayout(preview_layout)
+        # Layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.job_title_label)
+        layout.addWidget(self.job_title_input)
+        layout.addWidget(self.departments_label)
+        layout.addWidget(self.departments_dropdown)
+        layout.addWidget(self.webview)
+        layout.addWidget(self.save_button)
 
-        self.setLayout(main_layout)
-        self.resize(800, 600)
+        container = QWidget()
+        container.setLayout(layout)
+        self.setCentralWidget(container)
 
-        # Load Markdown content into editor and update preview
-        self.load_markdown(self.markdown_file)
+        # Create a QWebChannel and register content receiver object
+        self.channel = QWebChannel()
+        self.content_receiver = ContentReceiver()
+        self.channel.registerObject("pywebchannel", self.content_receiver)
+        self.webview.page().setWebChannel(self.channel)
 
-    def load_markdown(self, markdown_file):
-        with open(markdown_file, 'r', encoding='utf-8') as file:
-            markdown_content = file.read()
-            self.text_edit.setPlainText(markdown_content)
-            self.update_preview()
+    def load_ckeditor(self):
+        # Load content from 'Ejemplo.txt'
+        with open("Ejemplo.txt", "r", encoding="utf-8") as file:
+            content = file.read()
 
-    def update_preview(self):
-        markdown_content = self.text_edit.toPlainText()
-        html_content = markdown.markdown(markdown_content)
-        self.text_browser.setHtml(html_content)
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+            <script src="qrc:/qtwebchannel/qwebchannel.js"></script> <!-- Path to qwebchannel.js -->
+        </head>
+        <body>
+            <textarea name="editor1" id="editor1" rows="10" cols="80">
+                {content}
+            </textarea>
+            <script>
+                ClassicEditor
+                    .create(document.querySelector("#editor1"))
+                    .then(editor => {{
+                        window.editor = editor; // Save editor instance to window for access
+                    }})
+                    .catch(error => {{
+                        console.error('Error initializing CKEditor:', error);
+                    }});
 
-        # Process Markdown syntax dynamically
-        cursor = self.text_edit.textCursor()
-        cursor_position = cursor.position()
-        cursor.movePosition(QTextCursor.Start)
-        cursor.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor, cursor_position)
-        selected_text = cursor.selectedText()
+                // Create the QWebChannel object and connect to Python
+                var channel = new QWebChannel(qt.webChannelTransport, function(channel) {{
+                    window.pywebchannel = channel.objects.pywebchannel;
+                }});
 
-        if selected_text.startswith("#"):
-            level = selected_text.count("#")
-            html_text = f"<h{level}>{selected_text[level+1:]}</h{level}>"
-            cursor.insertHtml(html_text)
+                function sendContentToPython() {{
+                    const editor = window.editor;
+                    if (editor) {{
+                        const content = editor.getData();
+                        pywebchannel.receiveContent(content);  // Send content to Python
+                    }} else {{
+                        console.error('Editor not initialized.');
+                    }}
+                }}
+            </script>
+        </body>
+        </html>
+        """
 
-        cursor.setPosition(cursor_position)
-        self.text_edit.setTextCursor(cursor)
+        self.webview.setHtml(html_content)
 
-if __name__ == '__main__':
+    def save_content(self):
+        # Verificar si se ha ingresado el nombre del puesto y departamento antes de guardar
+        if self.job_title_input.text() == "":
+            QMessageBox.critical(self, "Error", "Por favor ingrese el nombre del puesto antes de guardar.")
+        elif self.departments_dropdown.text() == "Seleccionar Departamento":
+            QMessageBox.critical(self, "Error", "Por favor seleccione un departamento antes de guardar.")
+        else:
+            # Run JavaScript function to get content from CKEditor and send it to Python
+            self.webview.page().runJavaScript("sendContentToPython()")
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    editor = MarkdownEditor('Markdown/CoordinadorLocal.md')
-    editor.show()
+    window = MainWindow()
+    window.show()
     sys.exit(app.exec_())

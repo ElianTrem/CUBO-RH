@@ -1,0 +1,59 @@
+<h1>Información del Puesto</h1>
+<ul>
+    <li><strong>Título del Puesto:</strong> Asistente Comunitario</li>
+    <li><strong>Departamento:</strong> Administrativo</li>
+    <li><strong>Supervisor Inmediato:</strong> Coordinador local</li>
+    <li><strong>Edad:</strong> 18 min – 45 max</li>
+</ul>
+<h2>RESUMEN DEL PUESTO</h2>
+<p>
+    El Asistente Comunitario en el CUBO es responsable de apoyar la implementación de programas y actividades destinadas a mejorar el bienestar y las oportunidades de los miembros de la comunidad, especialmente los jóvenes. Este rol es crucial para fomentar un ambiente seguro, educativo y recreativo, contribuyendo a la misión del CUBO de promover la convivencia y el desarrollo personal y social.
+</p>
+<h2>REQUISITOS DE EDUCACIÓN Y EXPERIENCIA</h2>
+<ul>
+    <li><strong>Educación:</strong> Título de educación secundaria (bachillerato) como mínimo; preferentemente con estudios adicionales en áreas relacionadas con trabajo social, educación o ciencias sociales.</li>
+    <li><strong>Experiencia:</strong> Experiencia previa en trabajo comunitario, educativo o con jóvenes es altamente valorada.</li>
+    <li><strong>Habilidades:</strong>
+        <ul>
+            <li>Excelentes habilidades de comunicación interpersonal.</li>
+            <li>Capacidad para trabajar en equipo y colaborar con diversos grupos.</li>
+            <li>Habilidad para organizar y coordinar actividades múltiples y variadas.</li>
+            <li>Compromiso con los valores y la misión del CUBO.</li>
+        </ul>
+    </li>
+</ul>
+<h2>RESPONSABILIDADES CLAVE</h2>
+<ol>
+    <li>
+        <strong>Apoyo en la Planificación y Ejecución de Actividades:</strong>
+        <ul>
+            <li>Colaborar con el equipo de coordinación para planificar y llevar a cabo actividades educativas, deportivas, culturales y recreativas.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Interacción y Apoyo a los Miembros de la Comunidad:</strong>
+        <ul>
+            <li>Proporcionar asistencia y apoyo a los jóvenes y sus familias en el acceso a los recursos y servicios del CUBO.</li>
+            <li>Fomentar un ambiente inclusivo y de apoyo para todos los miembros de la comunidad.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Monitoreo y Evaluación:</strong>
+        <ul>
+            <li>Supervisar y evaluar la participación y el progreso de los jóvenes en las actividades del CUBO.</li>
+            <li>Elaborar informes y mantener registros precisos de las actividades y resultados.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Colaboración Interdepartamental:</strong>
+        <ul>
+            <li>Trabajar con otros departamentos del CUBO para asegurar una coordinación efectiva de los programas y servicios.</li>
+        </ul>
+    </li>
+</ol>
+<h2>CUALIDADES PERSONALES NECESARIAS</h2>
+<ul>
+    <li><strong>Interés en el Bienestar de las Personas:</strong> Pasión por ayudar a mejorar la vida de los demás.</li>
+    <li><strong>Paciencia y Empatía:</strong> Capacidad para entender y responder a las necesidades de la comunidad.</li>
+    <li><strong>Compromiso con la Misión del CUBO:</strong> Promover un entorno inclusivo y seguro para todos los niños y sus familias.</li>
+</ul>

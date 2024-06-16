@@ -1,0 +1,46 @@
+ <h1>Información del Puesto</h1>
+    <ul>
+        <li><strong>Título del Puesto:</strong> [Nombre del puesto]</li>
+        <li><strong>Departamento:</strong> [Departamento]</li>
+        <li><strong>Supervisor Inmediato:</strong> [Nombre del supervisor]</li>
+        <li><strong>Edad:</strong> [Rango de edad]</li>
+    </ul>
+
+    <h2>RESUMEN DEL PUESTO</h2>
+    <p>
+        [Descripción breve del puesto]
+    </p>
+
+    <h2>REQUISITOS DE EDUCACIÓN Y EXPERIENCIA</h2>
+    <ul>
+        <li><strong>Educación:</strong> [Título universitario en áreas relacionadas]</li>
+        <li><strong>Experiencia:</strong> [Mínimo de experiencia requerida]</li>
+        <li><strong>Habilidades:</strong>
+            <ul>
+                <li>[Habilidad 1]</li>
+                <li>[Habilidad 2]</li>
+                <li>[Habilidad 3]</li>
+                <li>[Habilidad 4]</li>
+                <li>[Habilidad 5]</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h2>RESPONSABILIDADES CLAVE</h2>
+    <ol>
+        <li>
+            <strong>[Nombre de la responsabilidad 1]:</strong>
+            <ul>
+                <li>[Descripción de la responsabilidad 1]</li>
+                <li>[Descripción de la responsabilidad 2]</li>
+            </ul>
+        </li>
+        <!-- Las demás responsabilidades se pueden agregar de manera similar -->
+    </ol>
+
+    <h2>CUALIDADES PERSONALES NECESARIAS</h2>
+    <ul>
+        <li><strong>Compromiso con la Comunidad:</strong> [Descripción de la cualidad]</li>
+        <li><strong>Proactividad:</strong> [Descripción de la cualidad]</li>
+        <li><strong>Empatía y Escucha Activa:</strong> [Descripción de la cualidad]</li>
+    </ul>

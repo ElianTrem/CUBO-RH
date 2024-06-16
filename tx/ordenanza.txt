@@ -1,0 +1,62 @@
+<h1>Información del Puesto</h1>
+<ul>
+    <li><strong>Título del Puesto:</strong> Ordenanza y Mantenimiento</li>
+    <li><strong>Departamento:</strong> Mantenimiento</li>
+    <li><strong>Supervisor Inmediato:</strong> Coordinador local</li>
+    <li><strong>Edad:</strong> 18 - 45 años</li>
+</ul>
+<h2>RESUMEN DEL PUESTO</h2>
+<p>
+    El personal de Ordenanza y Mantenimiento es responsable de asegurar la limpieza, orden y mantenimiento general de las instalaciones del CUBO, garantizando un ambiente seguro y adecuado para todas las actividades y usuarios del centro.
+</p>
+<h2>REQUISITOS DE EDUCACIÓN Y EXPERIENCIA</h2>
+<ul>
+    <li><strong>Educación:</strong> Educación secundaria completa.</li>
+    <li><strong>Experiencia:</strong> Experiencia mínima de 1 año en roles similares de mantenimiento y limpieza.</li>
+    <li><strong>Habilidades:</strong>
+        <ul>
+            <li>Conocimiento en técnicas de limpieza y mantenimiento.</li>
+            <li>Habilidad para manejar herramientas y equipos de limpieza.</li>
+            <li>Capacidad para identificar y solucionar problemas de mantenimiento.</li>
+            <li>Habilidad para trabajar de manera independiente y en equipo.</li>
+            <li>Atención a los detalles y capacidad para seguir instrucciones.</li>
+        </ul>
+    </li>
+</ul>
+<h2>RESPONSABILIDADES CLAVE</h2>
+<ol>
+    <li>
+        <strong>Limpieza y Orden:</strong>
+        <ul>
+            <li>Realizar la limpieza diaria de todas las áreas del CUBO.</li>
+            <li>Mantener el orden y la higiene en espacios comunes, oficinas y salas de actividades.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Mantenimiento General:</strong>
+        <ul>
+            <li>Realizar pequeñas reparaciones y mantenimiento preventivo de las instalaciones.</li>
+            <li>Informar sobre cualquier daño o necesidad de reparaciones mayores al supervisor inmediato.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Gestión de Residuos:</strong>
+        <ul>
+            <li>Clasificar y gestionar la disposición adecuada de residuos y reciclaje.</li>
+            <li>Asegurar la correcta eliminación de desechos según las normativas vigentes.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Apoyo Logístico:</strong>
+        <ul>
+            <li>Colaborar en la preparación y organización de eventos y actividades especiales en el CUBO.</li>
+            <li>Asistir en la instalación y desinstalación de equipos y mobiliario según sea necesario.</li>
+        </ul>
+    </li>
+</ol>
+<h2>CUALIDADES PERSONALES NECESARIAS</h2>
+<ul>
+    <li><strong>Responsabilidad y compromiso:</strong> Puntualidad y dedicación en el cumplimiento de las tareas asignadas.</li>
+    <li><strong>Proactividad:</strong> Capacidad para identificar y realizar tareas sin supervisión constante.</li>
+    <li><strong>Actitud positiva y colaborativa:</strong> Disposición para trabajar en equipo y apoyar a otros miembros del CUBO.</li>
+</ul>

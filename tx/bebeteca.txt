@@ -1,0 +1,62 @@
+<h1>Información del Puesto</h1>
+<ul>
+    <li><strong>Título del Puesto:</strong> Coordinador de Bebeteca</li>
+    <li><strong>Departamento:</strong> Educación y Cuidado Infantil</li>
+    <li><strong>Supervisor Inmediato:</strong> Coordinador local</li>
+    <li><strong>Edad:</strong> 18 - 45 años</li>
+</ul>
+<h2>RESUMEN DEL PUESTO</h2>
+<p>
+    El Coordinador de Bebeteca es responsable de la gestión y supervisión de la bebeteca del CUBO, asegurando un entorno seguro, educativo y estimulante para el desarrollo integral de los niños pequeños. Este rol incluye la planificación e implementación de actividades y programas que promuevan el desarrollo cognitivo, emocional y social de los niños.
+</p>
+<h2>REQUISITOS DE EDUCACIÓN Y EXPERIENCIA</h2>
+<ul>
+    <li><strong>Educación:</strong> Licenciatura en Educación Infantil, Psicopedagogía, Trabajo Social o carreras afines.</li>
+    <li><strong>Experiencia:</strong> Mínimo de 2 años de experiencia en roles similares trabajando con niños pequeños en entornos educativos o comunitarios.</li>
+    <li><strong>Habilidades:</strong>
+        <ul>
+            <li>Conocimiento en desarrollo infantil y prácticas educativas.</li>
+            <li>Habilidad para planificar y ejecutar actividades pedagógicas.</li>
+            <li>Capacidad para crear un ambiente seguro y acogedor.</li>
+            <li>Excelentes habilidades de comunicación con niños y padres.</li>
+            <li>Capacidad para liderar y coordinar equipos de trabajo.</li>
+        </ul>
+    </li>
+</ul>
+<h2>RESPONSABILIDADES CLAVE</h2>
+<ol>
+    <li>
+        <strong>Gestión de la Bebeteca:</strong>
+        <ul>
+            <li>Supervisar y coordinar las actividades diarias de la bebeteca.</li>
+            <li>Asegurar que todas las áreas de la bebeteca estén limpias, seguras y adecuadamente equipadas.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Planificación e Implementación de Actividades:</strong>
+        <ul>
+            <li>Desarrollar y ejecutar planes de actividades y programas educativos que promuevan el desarrollo integral de los niños.</li>
+            <li>Organizar eventos y actividades especiales en coordinación con otros departamentos del CUBO.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Interacción y Apoyo a los Niños:</strong>
+        <ul>
+            <li>Fomentar un ambiente de apoyo y confianza donde los niños se sientan seguros y motivados para aprender.</li>
+            <li>Proporcionar atención individualizada y apoyo emocional a los niños según sea necesario.</li>
+        </ul>
+    </li>
+    <li>
+        <strong>Relación con Padres y Tutores:</strong>
+        <ul>
+            <li>Comunicarse regularmente con los padres y tutores sobre el progreso y las necesidades de los niños.</li>
+            <li>Organizar reuniones y talleres para involucrar a los padres en el proceso educativo de sus hijos.</li>
+        </ul>
+    </li>
+</ol>
+<h2>CUALIDADES PERSONALES NECESARIAS</h2>
+<ul>
+    <li><strong>Pasión por la educación infantil:</strong> Compromiso con el desarrollo y bienestar de los niños pequeños.</li>
+    <li><strong>Creatividad y dinamismo:</strong> Capacidad para diseñar y ejecutar actividades educativas atractivas y efectivas.</li>
+    <li><strong>Paciencia y empatía:</strong> Capacidad para comprender y responder a las necesidades emocionales y educativas de los niños.</li>
+</ul>
