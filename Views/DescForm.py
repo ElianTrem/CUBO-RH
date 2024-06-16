@@ -1,7 +1,17 @@
 import sys
 import psycopg2
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QGridLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
+from DescPuesto_modal import DescriptionDialog
+
+class ClickableLabel(QLabel):
+    clicked = pyqtSignal()
+
+    def __init__(self, text, parent=None):
+        super().__init__(text, parent)
+
+    def mousePressEvent(self, event):
+        self.clicked.emit()
 
 class addBtn(QPushButton):
     def __init__(self, text, parent=None):
@@ -100,7 +110,11 @@ class Descriptor(QWidget):
             grayrow_layout = QGridLayout(grayrow_widget)
 
             for index, (item, width) in enumerate(zip(row, widths)):
-                item_label = QLabel(str(item))
+                if index == 0:  # Si es el primer elemento de la fila
+                    item_label = ClickableLabel(str(item))
+                    item_label.clicked.connect(lambda item=item: self.on_label_click(item))
+                else:
+                    item_label = QLabel(str(item))
                 item_label.setAlignment(Qt.AlignCenter)  # Alineado al centro
                 item_label.setStyleSheet("font-size: 16px; width: {}px;".format(width))
                 grayrow_layout.addWidget(item_label, 0, index)
@@ -108,6 +122,13 @@ class Descriptor(QWidget):
             main_layout.addWidget(grayrow_widget)
 
         main_layout.addStretch()
+    
+    def on_label_click(self, nombre_puesto):
+        self.show_description_dialog(nombre_puesto)
+
+    def show_description_dialog(self, nombre_puesto):
+        dialog = DescriptionDialog(nombre_puesto, self)
+        dialog.exec_()
 
     def get_widget(self):
         return self
