@@ -1,27 +1,51 @@
 import sys
+import psycopg2
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton,
     QLabel, QLineEdit, QMessageBox, QMenu, QAction
 )
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.QtCore import QUrl, QObject, pyqtSlot
+from PyQt5.QtCore import QUrl, QObject, pyqtSlot, QSize
 from PyQt5.QtWebChannel import QWebChannel
-import psycopg2
+from dialog import QuickAlert  # Importar libreria de diálogos
+
 
 class ContentReceiver(QObject):
+    def __init__(self):
+        super().__init__()
+        self.conn = psycopg2.connect(
+            dbname='BDCUBO',
+            user='postgres',
+            password='postgres123',
+            host='localhost',
+            port='5432'
+        )
+        self.cursor = self.conn.cursor()
+
     @pyqtSlot(str)
     def receiveContent(self, content):
         print("Content received from CKEditor:", content)
         # Verificar si se ha ingresado el nombre del puesto
         if window.job_title_input.text() == "":
-            QMessageBox.critical(window, "Error", "Por favor ingrese el nombre del puesto antes de guardar.")
+            error_dialog = QuickAlert(
+                'error', 'Error', 'Por favor, Ingrese el nombre del puesto.')
+            error_dialog.exec_()
         else:
-            # Guardar el contenido en un archivo
             job_title = window.job_title_input.text()
-            with open(f"../../tx/{job_title}.txt", "w", encoding="utf-8") as file:
-                file.write(content)
-                QMessageBox.information(window, "Éxito", "Contenido guardado correctamente.")
-#Creamos una clase dropdown para mostrar los departamentos
+            department = window.departments_dropdown.text()
+            # Guardar el contenido en la base de datos
+            self.cursor.execute(
+                "INSERT INTO puestos (nombre, descripcion_markdown) VALUES (%s, %s)",
+                (job_title, content)
+            )
+            self.conn.commit()
+            success_dialog = QuickAlert(
+                'success', 'Éxito', 'El puesto se ha guardado correctamente.')
+            success_dialog.exec_()
+            # Cerrar la ventana
+            window.close()
+
+
 class DropDown(QPushButton):
     def __init__(self, text, parent=None):
         super().__init__(text, parent)
@@ -32,7 +56,7 @@ class DropDown(QPushButton):
                 font-size: 14px;
                 color: #000000;
                 border-radius: 12px;
-                max-width: 200px;
+                max-width: 300px;
                 max-height: 50px;
                 min-height: 37px;
             }
@@ -43,15 +67,15 @@ class DropDown(QPushButton):
                 background-color: #9ED7A2;
             }
         """)
-        #cargo los departamentos desde la base de datos
+        # cargo los departamentos desde la base de datos
         self.departamentos = []
         try:
             conn = psycopg2.connect(
-            dbname='BDCUBO',
-            user='postgres',
-            password='postgres123',
-            host='localhost',
-            port='5432'
+                dbname='BDCUBO',
+                user='postgres',
+                password='postgres123',
+                host='localhost',
+                port='5432'
             )
             cursor = conn.cursor()
             cursor.execute("SELECT nombre FROM departamentos")
@@ -64,27 +88,58 @@ class DropDown(QPushButton):
             self.menu.addAction(departamento[0])
         self.setMenu(self.menu)
         self.menu.triggered.connect(self.on_triggered)
+
     def on_triggered(self, action):
         print(f"Departamento seleccionado: {action.text()}")
         self.setText(action.text())
         self.setChecked(False)
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Agregar Puesto")
+        self.setFixedSize(QSize(800, 600))
 
         # Create the WebView
         self.webview = QWebEngineView()
         self.load_ckeditor()
 
         # Create a Save button
-        self.save_button = QPushButton("Save")
+        self.save_button = QPushButton("Guardar")
+        self.save_button.setStyleSheet("""
+            QPushButton {
+                background-color: #9ED7A2;
+                font-size: 16px;
+                color: #FFFFFF;
+                border-radius: 12px;
+                max-width: 200px;
+                max-height: 50px;
+                min-height: 37px;
+            }
+            QPushButton:hover {
+                background-color: #7FC88B;
+            }
+            QPushButton:pressed {
+                background-color: #5CAB6D;
+            }
+        """)
         self.save_button.clicked.connect(self.save_content)
 
         # Create a QLineEdit for job title input
-        self.job_title_label = QLabel("Nombre del Puesto:")
         self.job_title_input = QLineEdit()
+        self.job_title_input.setPlaceholderText("Nombre del Puesto")
+        self.job_title_input.setStyleSheet("""
+            QLineEdit {
+                background-color: #FFFFFF;
+                font-size: 14px;
+                color: #000000;
+                border-radius: 12px;
+                padding: 5px;
+                max-height: 50px;
+                min-height: 37px;
+            }
+        """)
 
         # Create a dropdown for departments
         self.departments_label = QLabel("Departamento:")
@@ -92,7 +147,6 @@ class MainWindow(QMainWindow):
 
         # Layout
         layout = QVBoxLayout()
-        layout.addWidget(self.job_title_label)
         layout.addWidget(self.job_title_input)
         layout.addWidget(self.departments_label)
         layout.addWidget(self.departments_dropdown)
@@ -111,7 +165,7 @@ class MainWindow(QMainWindow):
 
     def load_ckeditor(self):
         # Load content from 'Ejemplo.txt'
-        with open("Ejemplo.txt", "r", encoding="utf-8") as file:
+        with open("tx/psicologo.txt", "r", encoding="utf-8") as file:
             content = file.read()
 
         html_content = f"""
@@ -161,12 +215,17 @@ class MainWindow(QMainWindow):
     def save_content(self):
         # Verificar si se ha ingresado el nombre del puesto y departamento antes de guardar
         if self.job_title_input.text() == "":
-            QMessageBox.critical(self, "Error", "Por favor ingrese el nombre del puesto antes de guardar.")
+            error_dialog = QuickAlert(
+                'error', 'Error', 'Por favor, Ingrese el nombre del puesto.')
+            error_dialog.exec_()
         elif self.departments_dropdown.text() == "Seleccionar Departamento":
-            QMessageBox.critical(self, "Error", "Por favor seleccione un departamento antes de guardar.")
+            error_dialog = QuickAlert(
+                'error', 'Error', 'Por favor, Seleccione un departamento.')
+            error_dialog.exec_()
         else:
             # Run JavaScript function to get content from CKEditor and send it to Python
             self.webview.page().runJavaScript("sendContentToPython()")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
