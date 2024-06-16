@@ -165,7 +165,7 @@ class MainWindow(QMainWindow):
 
     def load_ckeditor(self):
         # Load content from 'Ejemplo.txt'
-        with open("tx/psicologo.txt", "r", encoding="utf-8") as file:
+        with open("tx/Ejemplo.txt", "r", encoding="utf-8") as file:
             content = file.read()
 
         html_content = f"""
