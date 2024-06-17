@@ -3,6 +3,7 @@ import psycopg2
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QGridLayout
 from PyQt5.QtCore import Qt, pyqtSignal
 from DescPuesto_modal import DescriptionDialog
+from puesto import AddPuesto
 
 
 class ClickableLabel(QLabel):
@@ -87,6 +88,8 @@ class Descriptor(QWidget):
         # Agregamos el botón con texto "Nuevo Puesto de Trabajo"
         btn = addBtn('Nuevo Puesto de Trabajo')
         main_layout.addWidget(btn)
+        # Abrimos la ventana de agregar puesto
+        btn.clicked.connect(self.show_add_puesto)
 
         # Agregamos los encabezados obtenidos de la base de datos
         headers = ["Titulo", "Departamento", "Aplicantes", "Plaza"]
@@ -122,10 +125,11 @@ class Descriptor(QWidget):
                         lambda item=item: self.on_label_click(item))
                 else:
                     item_label = QLabel(str(item))
-                    item_label.setAlignment(Qt.AlignCenter)
-                    item_label.setStyleSheet(
-                        "font-size: 16px; width: {}px;".format(width))
-                    grayrow_layout.addWidget(item_label, 0, index)
+
+                item_label.setAlignment(Qt.AlignCenter)
+                item_label.setStyleSheet(
+                    "font-size: 16px; width: {}px;".format(width))
+                grayrow_layout.addWidget(item_label, 0, index)
 
             main_layout.addWidget(grayrow_widget)
 
@@ -136,6 +140,10 @@ class Descriptor(QWidget):
 
     def show_description_dialog(self, nombre_puesto):
         dialog = DescriptionDialog(nombre_puesto, self)
+        dialog.exec_()
+
+    def show_add_puesto(self):
+        dialog = AddPuesto()
         dialog.exec_()
 
     def get_widget(self):

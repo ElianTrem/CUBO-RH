@@ -9,8 +9,9 @@ from Expediente_Form import Expediente
 class OpcionMenu(QPushButton):
     def __init__(self, text, contenedor_layout, parent=None):
         super().__init__(text, parent)
-        # Guardar el contenedor_layout como atributo
+        self.texto = text
         self.contenedor_layout = contenedor_layout
+        self.parent = parent
         self.setCheckable(True)
         self.setStyleSheet("""
             QPushButton {
@@ -62,7 +63,11 @@ class OpcionMenu(QPushButton):
             self.start_timer("Expediente")
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
-            self.contenedor_layout.addWidget(QWidget())
+            widget = QWidget()
+            self.contenedor_layout.addWidget(widget)
+
+        # Actualizar el widget activo en el padre
+        self.parent.set_active_widget(self.texto, widget)
 
     def start_timer(self, widget_type):
         # Crear un temporizador para actualizar el widget cada cierto tiempo
@@ -71,21 +76,7 @@ class OpcionMenu(QPushButton):
         self.timer.start(5000)  # Intervalo de 5000 ms (5 segundos)
 
     def update_widget(self, widget_type):
-        # Eliminar el widget actual
-        while self.contenedor_layout.count():
-            child = self.contenedor_layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
-
-        # Crear y agregar una nueva instancia del widget
-        if widget_type == "Descriptor":
-            widget = Descriptor()
-        elif widget_type == "Expediente":
-            widget = Expediente()
-        else:
-            widget = QWidget()
-        self.contenedor_layout.addWidget(widget)
-        print(f"Actualizando widget: {widget_type}")
+        self.parent.update_active_widget()
 
 
 class cerrarSesion(QPushButton):
@@ -140,6 +131,10 @@ class MenuForm(QWidget):
         navbar_layout.setAlignment(Qt.AlignTop)
         self.contenedor_layout = QVBoxLayout(ContenedorDinamico)
 
+        # Inicializar el widget activo
+        self.active_widget = None
+        self.active_widget_type = None
+
         # Cargar el menú desde el archivo XML
         menu_items = self.load_menu_from_xml('Menus/Admin.xml')
         self.generate_menu_buttons(
@@ -174,13 +169,36 @@ class MenuForm(QWidget):
             title_label.setAlignment(Qt.AlignCenter)
             layout.addWidget(title_label)
             for option in section['options']:
-                # Pasar contenedor_layout como parámetro
-                button = OpcionMenu(option, contenedor_layout)
+                # Pasar contenedor_layout y self como parámetros
+                button = OpcionMenu(option, contenedor_layout, self)
                 layout.addWidget(button)
                 button_group.append(button)  # Agregar botón al grupo
 
         layout.addWidget(cerrarSesion("Cerrar Sesión"))
         layout.addStretch()  # Agregar un stretch al final para empujar los elementos hacia arriba
+
+    def set_active_widget(self, widget_type, widget_instance):
+        self.active_widget_type = widget_type
+        self.active_widget = widget_instance
+
+    def update_active_widget(self):
+        # Eliminar el widget actual
+        while self.contenedor_layout.count():
+            child = self.contenedor_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+        # Crear y agregar una nueva instancia del widget activo
+        if self.active_widget_type == "Descriptor de puestos":
+            widget = Descriptor()
+        elif self.active_widget_type == "Expediente de trabajadores":
+            widget = Expediente()
+        else:
+            widget = QWidget()
+        self.contenedor_layout.addWidget(widget)
+        print(f"Actualizando widget: {self.active_widget_type}")
+        # Actualizar la referencia del widget activo
+        self.active_widget = widget
 
 
 if __name__ == "__main__":
