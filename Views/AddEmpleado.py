@@ -93,6 +93,8 @@ class EmpleadoDialog(QDialog):
         super().__init__()
         self.setWindowTitle(
             "Agregar Empleado" if not employee_id else "Editar Empleado")
+        self.setWindowIcon(QIcon("img/image.png"))
+        self.setFixedSize(500, 280)
         self.employee_id = employee_id
 
         layout = QVBoxLayout()  # Elimina container y usa layout directamente

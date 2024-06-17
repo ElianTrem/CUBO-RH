@@ -14,6 +14,16 @@ from PyQt5.QtCore import Qt, QObject, pyqtSignal
 from AddEmpleado import EmpleadoDialog
 
 
+class ClickableLabel(QLabel):
+    clicked = pyqtSignal()
+
+    def __init__(self, text, parent=None):
+        super().__init__(text, parent)
+
+    def mousePressEvent(self, event):
+        self.clicked.emit()
+
+
 def get_rows_from_database():
     rows = []
     try:
@@ -86,7 +96,6 @@ class Expediente(QWidget):
 
     def open_employee_dialog(self):
         dialog = EmpleadoDialog()
-        dialog.accepted.connect(self.reload_data)
         dialog.exec_()
 
     def load_data(self):
@@ -132,7 +141,12 @@ class Expediente(QWidget):
             grayrow_layout = QGridLayout(grayrow_widget)
 
             for index, (item, width) in enumerate(zip(row, self.widths)):
-                item_label = QLabel(str(item))
+                if index == 0:  # Si es el primer elemento de la fila
+                    item_label = ClickableLabel(str(item))
+                    item_label.clicked.connect(
+                        lambda item=item: self.on_label_click(item))
+                else:
+                    item_label = QLabel(str(item))
                 item_label.setAlignment(Qt.AlignCenter)  # Alineado al centro
                 item_label.setStyleSheet(
                     "font-size: 16px; width: {}px;".format(width)
@@ -143,8 +157,13 @@ class Expediente(QWidget):
 
         main_layout.addStretch()
 
-    def reload_data(self):
-        self.load_data()
+    def on_label_click(self, id_empleado):
+        print(f"ID del empleado: {id_empleado}")
+        dialog = EmpleadoDialog(id_empleado)
+        dialog.exec_()
+
+    def get_widget(self):
+        return self
 
 
 if __name__ == "__main__":

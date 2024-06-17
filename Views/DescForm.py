@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QHB
 from PyQt5.QtCore import Qt, pyqtSignal
 from DescPuesto_modal import DescriptionDialog
 
+
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()
 
@@ -12,6 +13,7 @@ class ClickableLabel(QLabel):
 
     def mousePressEvent(self, event):
         self.clicked.emit()
+
 
 class addBtn(QPushButton):
     def __init__(self, text, parent=None):
@@ -34,6 +36,7 @@ class addBtn(QPushButton):
                 background-color: #9ED7A2;
             }
         """)
+
 
 def get_rows_from_database():
     rows = []
@@ -71,6 +74,7 @@ def get_rows_from_database():
         print(f"Error al conectar a la base de datos: {e}")
     return rows
 
+
 class Descriptor(QWidget):
     def __init__(self):
         super().__init__()
@@ -84,20 +88,21 @@ class Descriptor(QWidget):
         btn = addBtn('Nuevo Puesto de Trabajo')
         main_layout.addWidget(btn)
 
-        
         # Agregamos los encabezados obtenidos de la base de datos
         headers = ["Titulo", "Departamento", "Aplicantes", "Plaza"]
         widths = [200, 200, 100, 50]  # Anchos fijos para cada columna
 
         # Agregamos un widget para los encabezados con cuadrícula
         headers_widget = QWidget(self)
-        headers_widget.setStyleSheet("background-color: #F3FAF3; max-height: 50px; min-height: 37px; border-radius: 8px;")
+        headers_widget.setStyleSheet(
+            "background-color: #F3FAF3; max-height: 50px; min-height: 37px; border-radius: 8px;")
         headers_layout = QGridLayout(headers_widget)
 
         for index, (header_text, width) in enumerate(zip(headers, widths)):
             header_label = QLabel(header_text)
             header_label.setAlignment(Qt.AlignCenter)  # Alineado al centro
-            header_label.setStyleSheet("font-weight: bold; font-size: 18px; width: {}px;".format(width))
+            header_label.setStyleSheet(
+                "font-weight: bold; font-size: 18px; width: {}px;".format(width))
             headers_layout.addWidget(header_label, 0, index)
 
         main_layout.addWidget(headers_widget)
@@ -106,23 +111,26 @@ class Descriptor(QWidget):
         rows = get_rows_from_database()
         for row in rows:
             grayrow_widget = QWidget(self)
-            grayrow_widget.setStyleSheet("background-color: #F5F5F5; max-height: 50px; min-height: 37px;")
+            grayrow_widget.setStyleSheet(
+                "background-color: #F5F5F5; max-height: 50px; min-height: 37px;")
             grayrow_layout = QGridLayout(grayrow_widget)
 
             for index, (item, width) in enumerate(zip(row, widths)):
                 if index == 0:  # Si es el primer elemento de la fila
                     item_label = ClickableLabel(str(item))
-                    item_label.clicked.connect(lambda item=item: self.on_label_click(item))
+                    item_label.clicked.connect(
+                        lambda item=item: self.on_label_click(item))
                 else:
                     item_label = QLabel(str(item))
-                item_label.setAlignment(Qt.AlignCenter)  # Alineado al centro
-                item_label.setStyleSheet("font-size: 16px; width: {}px;".format(width))
-                grayrow_layout.addWidget(item_label, 0, index)
+                    item_label.setAlignment(Qt.AlignCenter)
+                    item_label.setStyleSheet(
+                        "font-size: 16px; width: {}px;".format(width))
+                    grayrow_layout.addWidget(item_label, 0, index)
 
             main_layout.addWidget(grayrow_widget)
 
         main_layout.addStretch()
-    
+
     def on_label_click(self, nombre_puesto):
         self.show_description_dialog(nombre_puesto)
 
@@ -132,6 +140,7 @@ class Descriptor(QWidget):
 
     def get_widget(self):
         return self
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
