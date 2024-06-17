@@ -1,1 +1,1 @@
-from PyQt5.QtCore import Qt
+contenedor_layout

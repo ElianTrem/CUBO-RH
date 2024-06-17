@@ -1,11 +1,13 @@
 import sys
 import psycopg2
+import re
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
 from dialog import QuickAlert  # Importar libreria de diálogos
 from Menu import MenuForm
+
 
 class LoginForm(QWidget):
     def __init__(self):
@@ -21,17 +23,23 @@ class LoginForm(QWidget):
         label_password = QLabel('Contraseña')
         self.line_edit_email = QLineEdit()
         self.line_edit_password = QLineEdit()
-        self.line_edit_password.setEchoMode(QLineEdit.Password)  # Ocultar texto de la contraseña
-        self.line_edit_email.setPlaceholderText('Ingrese su correo electrónico')
+        self.line_edit_password.setEchoMode(
+            QLineEdit.Password)  # Ocultar texto de la contraseña
+        self.line_edit_email.setPlaceholderText(
+            'Ingrese su correo electrónico')
         self.line_edit_password.setPlaceholderText('Ingrese su contraseña')
 
         button_login = QPushButton('Iniciar sesión')
 
         # Configurar colores para los campos de entrada, sin borde y con elevación
-        self.line_edit_email.setStyleSheet("background-color: #F5F5F5; border-radius: 4px; border: 0px solid #CCCCCC; height: 40px;")
-        self.line_edit_password.setStyleSheet("background-color: #F5F5F5; border-radius: 4px; border: 0px solid #CCCCCC; height: 40px;")
-        label_email.setStyleSheet("color: #000000; font-weight: bold; font-size: 16px; height: 10px;")
-        label_password.setStyleSheet("color: #000000; font-weight: bold; font-size: 16px; height: 10px;")
+        self.line_edit_email.setStyleSheet(
+            "background-color: #F5F5F5; border-radius: 4px; border: 0px solid #CCCCCC; height: 40px;")
+        self.line_edit_password.setStyleSheet(
+            "background-color: #F5F5F5; border-radius: 4px; border: 0px solid #CCCCCC; height: 40px;")
+        label_email.setStyleSheet(
+            "color: #000000; font-weight: bold; font-size: 16px; height: 10px;")
+        label_password.setStyleSheet(
+            "color: #000000; font-weight: bold; font-size: 16px; height: 10px;")
 
         # Configurar layout principal
         main_layout = QVBoxLayout(self)
@@ -42,30 +50,37 @@ class LoginForm(QWidget):
 
         # Crear tarjeta con elevación y de un tamaño máximo de 1229 por 729
         card_widget = QWidget()
-        card_widget.setStyleSheet("background-color: white; border-radius: 8px; ")
+        card_widget.setStyleSheet(
+            "background-color: white; border-radius: 8px; ")
 
         card_layout = QVBoxLayout(card_widget)
-        card_layout.setContentsMargins(20, 20, 20, 20)  # Agregar márgenes al layout de la tarjeta
+        # Agregar márgenes al layout de la tarjeta
+        card_layout.setContentsMargins(20, 20, 20, 20)
         card_widget.setLayout(card_layout)
 
         # Configurar layout de la imagen y formulario dentro de la tarjeta
         login_layout = QHBoxLayout()
-        login_layout.setSpacing(20)  # Agregar espacio entre la imagen y el formulario
+        # Agregar espacio entre la imagen y el formulario
+        login_layout.setSpacing(20)
         card_layout.addLayout(login_layout)
 
         # Cargar imagen desde archivo local
         pixmap = QPixmap('img/image.png')  # Ruta de la imagen
         label_image = QLabel()
         # Ampliar la imagen a 541x217 y mejorar la calidad de la imagen
-        label_image.setPixmap(pixmap.scaled(800, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        label_image.setPixmap(pixmap.scaled(
+            800, 400, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         login_layout.addWidget(label_image)
 
         # Crear un contenedor de formulario para aplicar estilo
         form_container = QWidget()
-        form_container.setStyleSheet("background-color: #FfFfFf; border-radius: 8px;")
+        form_container.setStyleSheet(
+            "background-color: #FfFfFf; border-radius: 8px;")
         form_layout = QVBoxLayout(form_container)
-        form_layout.setContentsMargins(20, 20, 20, 20)  # Agregar márgenes al layout del formulario
-        form_layout.setSpacing(20)  # Aumentar espacio entre los elementos del formulario
+        # Agregar márgenes al layout del formulario
+        form_layout.setContentsMargins(20, 20, 20, 20)
+        # Aumentar espacio entre los elementos del formulario
+        form_layout.setSpacing(20)
         login_layout.addWidget(form_container)
 
         form_layout.addWidget(label_email)
@@ -93,23 +108,36 @@ class LoginForm(QWidget):
             }
         """)
 
-        button_login.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)  # Prevent the button from expanding
+        # Prevent the button from expanding
+        button_login.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         button_layout = QHBoxLayout()  # Crear un nuevo layout horizontal para el botón
         button_layout.addStretch()  # Add stretch to the left
-        button_layout.addWidget(button_login)  # Agregar el botón al layout horizontal
+        # Agregar el botón al layout horizontal
+        button_layout.addWidget(button_login)
         button_layout.addStretch()  # Add stretch to the right
-        form_layout.addLayout(button_layout)  # Agregar el layout horizontal al layout del formulario
+        # Agregar el layout horizontal al layout del formulario
+        form_layout.addLayout(button_layout)
 
         main_layout.addWidget(card_widget)
         button_login.clicked.connect(self.start_loading)
+
+    def validate_email(self, email):
+        email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        return re.match(email_regex, email) is not None
 
     def start_loading(self):
         email = self.line_edit_email.text()
         password = self.line_edit_password.text()
 
         if not email or not password:
-            error_dialog = QuickAlert('error', 'Error', 'Por favor, complete todos los campos.')
+            error_dialog = QuickAlert(
+                'error', 'Error', 'Por favor, complete todos los campos.')
+            error_dialog.exec_()
+            return
+        if not self.validate_email(email):
+            error_dialog = QuickAlert(
+                'error', 'Error', 'Por favor, ingrese un correo electrónico válido.')
             error_dialog.exec_()
             return
 
@@ -124,7 +152,8 @@ class LoginForm(QWidget):
                     port='5432'
                 )
                 cursor = conn.cursor()
-                cursor.execute("SELECT * FROM usuarios WHERE correo=%s AND contrasena=%s", (email, password))
+                cursor.execute(
+                    "SELECT * FROM usuarios WHERE correo=%s AND contrasena=%s", (email, password))
                 user = cursor.fetchone()
                 conn.close()
                 if user:
@@ -141,13 +170,15 @@ class LoginForm(QWidget):
 
     def handle_login_result(self, success):
         if success:
-            success_dialog = QuickAlert('success', 'Éxito', 'Inicio de sesión exitoso')
+            success_dialog = QuickAlert(
+                'success', 'Éxito', 'Inicio de sesión exitoso')
             success_dialog.exec_()
             self.main_window = MenuForm()  # Crear una instancia de la ventana principal
             self.main_window.showMaximized()  # Mostrar la ventana principal maximizada
             self.close()  # Cerrar la ventana actual de inicio de sesión
         else:
-            error_dialog = QuickAlert('error', 'Error', 'Correo electrónico o contraseña incorrectos.')
+            error_dialog = QuickAlert(
+                'error', 'Error', 'Correo electrónico o contraseña incorrectos.')
             error_dialog.exec_()
 
     def closeEvent(self, event):
@@ -156,6 +187,7 @@ class LoginForm(QWidget):
             self.worker_thread.quit()
             self.worker_thread.wait()
         event.accept()
+
 
 class WorkerThread(QThread):
     threadSignal = pyqtSignal(bool)
@@ -167,13 +199,16 @@ class WorkerThread(QThread):
     def run(self):
         # Ejecutar la operación larga y emitir la señal con el resultado que es un booleano
         result = self.operation_function()
-        self.threadSignal.emit(result)  # Emite la señal con el resultado de la operación
+        # Emite la señal con el resultado de la operación
+        self.threadSignal.emit(result)
+
 
 def main():
     app = QApplication(sys.argv)
     ex = LoginForm()
-    ex.showMaximized()  
+    ex.showMaximized()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()
