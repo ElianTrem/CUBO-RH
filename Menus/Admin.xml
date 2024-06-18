@@ -7,7 +7,8 @@
         <option>Seguimiento de candidatos</option>
     </section>
     <section title="Gestión de nominas">
-        <option>Empleado</option>
+        <option>Empleados y Nominas</option>
+        <option>Calcular prestaciones y descuentos</option>
     </section>
     <section title="Gestión de horarios">
         <option>Ausencias</option>

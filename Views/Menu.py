@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
 from Expediente_Form import Expediente 
+from Descuentos_Prestaciones import Descuentos_Pestaciones
 
 class OpcionMenu(QPushButton):
     def __init__(self, text, contenedor_layout, parent=None):
@@ -35,8 +36,6 @@ class OpcionMenu(QPushButton):
             button.setChecked(False)
         # Marcar el botón actual
         self.setChecked(True)
-        # Registrar el botón presionado
-        print(f"Botón '{self.text()}' presionado")
 
         # Eliminar todos los widgets del contenedor dinámico
         while self.contenedor_layout.count():
@@ -48,6 +47,8 @@ class OpcionMenu(QPushButton):
             self.contenedor_layout.addWidget(Descriptor())
         elif self.text() == "Expediente de trabajadores":
             self.contenedor_layout.addWidget(Expediente())
+        elif self.text() == "Calcular prestaciones y descuentos":
+            self.contenedor_layout.addWidget(Descuentos_Pestaciones())
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
             self.contenedor_layout.addWidget(QWidget())
