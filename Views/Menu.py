@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt, QTimer
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
 from Expediente_Form import Expediente
+from Reclutamiento import Reclutamiento
 
 
 class OpcionMenu(QPushButton):
@@ -61,6 +62,10 @@ class OpcionMenu(QPushButton):
             widget = Expediente()
             self.contenedor_layout.addWidget(widget)
             self.start_timer("Expediente")
+        elif self.text() == "Reclutamiento":
+            widget = Reclutamiento()
+            self.contenedor_layout.addWidget(widget)
+            self.start_timer("Reclutamiento")
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
             widget = QWidget()
@@ -193,6 +198,8 @@ class MenuForm(QWidget):
             widget = Descriptor()
         elif self.active_widget_type == "Expediente de trabajadores":
             widget = Expediente()
+        elif self.active_widget_type == "Reclutamiento":
+            widget = Reclutamiento()
         else:
             widget = QWidget()
         self.contenedor_layout.addWidget(widget)
