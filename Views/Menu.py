@@ -55,7 +55,7 @@ class OpcionMenu(QPushButton):
         elif self.text() == "Reclutamiento":
             widget = Reclutamiento()
         elif self.text() == "Calcular prestaciones y descuentos":
-            self.contenedor_layout.addWidget(Descuentos_Pestaciones())
+            widget = Descuentos_Pestaciones()
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
             widget = QWidget()
@@ -171,15 +171,14 @@ class MenuForm(QWidget):
                 min-width: 200px;
                 max-height: 35px;
                 min-height: 35px;
-                Border: 1px solid #4365EF;
+                border: 1px solid #4361EF;
             }
             QPushButton:hover {
                 background-color: #F0F0F0;
             }
             QPushButton:pressed {
-                background-color: #4365EF;
+                background-color: #4361EF;
             }
-            
         """)
         update_button.clicked.connect(self.update_active_widget)
         layout.addWidget(update_button)
@@ -205,6 +204,8 @@ class MenuForm(QWidget):
             widget = Expediente()
         elif self.active_widget_type == "Reclutamiento":
             widget = Reclutamiento()
+        elif self.active_widget_type == "Calcular prestaciones y descuentos":
+            widget = Descuentos_Pestaciones()
         else:
             widget = QWidget()
         self.contenedor_layout.addWidget(widget)
