@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
 from Expediente_Form import Expediente
@@ -36,7 +36,6 @@ class OpcionMenu(QPushButton):
             }
         """)
         self.clicked.connect(self.on_clicked)
-        self.timer = None
 
     def on_clicked(self):
         # Desmarcar todos los botones del grupo
@@ -51,23 +50,13 @@ class OpcionMenu(QPushButton):
             if child.widget():
                 child.widget().deleteLater()
 
-        # Detener el temporizador si ya existe
-        if self.timer and self.timer.isActive():
-            self.timer.stop()
-
-        # Agregar el widget correspondiente y configurar el temporizador
+        # Agregar el widget correspondiente
         if self.text() == "Descriptor de puestos":
             widget = Descriptor()
-            self.contenedor_layout.addWidget(widget)
-            self.start_timer("Descriptor")
         elif self.text() == "Expediente de trabajadores":
             widget = Expediente()
-            self.contenedor_layout.addWidget(widget)
-            self.start_timer("Expediente")
         elif self.text() == "Reclutamiento":
             widget = Reclutamiento()
-            self.contenedor_layout.addWidget(widget)
-            self.start_timer("Reclutamiento")
         elif self.text() == "Calcular prestaciones y descuentos":
             widget = Descuentos_Pestaciones()
             self.contenedor_layout.addWidget(widget)
@@ -80,7 +69,7 @@ class OpcionMenu(QPushButton):
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
             widget = QWidget()
-            self.contenedor_layout.addWidget(widget)
+        self.contenedor_layout.addWidget(widget)
 
         # Actualizar el widget activo en el padre
         self.parent.set_active_widget(self.texto, widget)
@@ -145,7 +134,7 @@ class MenuForm(QWidget):
 
         # Crear layouts para Navbar y ContenedorDinamico
         navbar_layout = QVBoxLayout(Navbar)
-        navbar_layout.setSpacing(8)  # Espacio de 20 px entre elementos
+        navbar_layout.setSpacing(8)  # Espacio de 8 px entre elementos
         # Alinear elementos en la parte superior
         navbar_layout.setAlignment(Qt.AlignTop)
         self.contenedor_layout = QVBoxLayout(ContenedorDinamico)
@@ -196,6 +185,29 @@ class MenuForm(QWidget):
                 layout.addWidget(button)
                 button_group.append(button)  # Agregar botón al grupo
 
+        # Añadir el botón de "Actualizar"
+        update_button = QPushButton("Actualizar")
+        update_button.setStyleSheet("""
+            QPushButton {
+                background-color: #FFFFFF;
+                font-size: 14px;
+                color: #000000;
+                border-radius: 12px;
+                min-width: 200px;
+                max-height: 35px;
+                min-height: 35px;
+                border: 1px solid #4361EF;
+            }
+            QPushButton:hover {
+                background-color: #F0F0F0;
+            }
+            QPushButton:pressed {
+                background-color: #4361EF;
+            }
+        """)
+        update_button.clicked.connect(self.update_active_widget)
+        layout.addWidget(update_button)
+
         layout.addWidget(cerrarSesion("Cerrar Sesión"))
         layout.addStretch()  # Agregar un stretch al final para empujar los elementos hacia arriba
 
@@ -217,6 +229,8 @@ class MenuForm(QWidget):
             widget = Expediente()
         elif self.active_widget_type == "Reclutamiento":
             widget = Reclutamiento()
+        elif self.active_widget_type == "Calcular prestaciones y descuentos":
+            widget = Descuentos_Pestaciones()
         else:
             widget = QWidget()
         self.contenedor_layout.addWidget(widget)
