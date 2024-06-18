@@ -13,6 +13,8 @@ class LoginForm(QWidget):
     def __init__(self):
         super().__init__()
         self.worker_thread = None  # Mantener referencia al hilo de trabajo
+        self.user_id = None
+        self.rol = None
         self.initUI()
 
     def initUI(self):
@@ -155,8 +157,11 @@ class LoginForm(QWidget):
                 cursor.execute(
                     "SELECT * FROM usuarios WHERE correo=%s AND contrasena=%s", (email, password))
                 user = cursor.fetchone()
+                
                 conn.close()
                 if user:
+                    self.user_id = user[0]
+                    self.rol = user[4]
                     return True
                 else:
                     return False
@@ -173,7 +178,7 @@ class LoginForm(QWidget):
             success_dialog = QuickAlert(
                 'success', 'Éxito', 'Inicio de sesión exitoso')
             success_dialog.exec_()
-            self.main_window = MenuForm()  # Crear una instancia de la ventana principal
+            self.main_window = MenuForm(self.user_id, self.rol)  # Crear una instancia de la ventana principal
             self.main_window.showMaximized()  # Mostrar la ventana principal maximizada
             self.close()  # Cerrar la ventana actual de inicio de sesión
         else:

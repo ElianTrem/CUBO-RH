@@ -5,12 +5,15 @@ import xml.etree.ElementTree as ET
 from DescForm import Descriptor
 from Expediente_Form import Expediente
 from Descuentos_Prestaciones import Descuentos_Pestaciones
+from Calculadora import Calcu
 from Reclutamiento import Reclutamiento
+from CambioContrasena import ChangePasswordForm
 
 
 class OpcionMenu(QPushButton):
-    def __init__(self, text, contenedor_layout, parent=None):
+    def __init__(self, text, contenedor_layout, id_user, parent=None):
         super().__init__(text, parent)
+        self.id_user = id_user
         self.texto = text
         self.contenedor_layout = contenedor_layout
         self.parent = parent
@@ -66,7 +69,14 @@ class OpcionMenu(QPushButton):
             self.contenedor_layout.addWidget(widget)
             self.start_timer("Reclutamiento")
         elif self.text() == "Calcular prestaciones y descuentos":
-            self.contenedor_layout.addWidget(Descuentos_Pestaciones())
+            widget = Descuentos_Pestaciones()
+            self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Calculadora prestaciones y descuentos":
+            widget = Calcu()
+            self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Cambiar contraseña":
+            widget = ChangePasswordForm(self.id_user)
+            self.contenedor_layout.addWidget(widget)
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
             widget = QWidget()
@@ -79,10 +89,11 @@ class OpcionMenu(QPushButton):
         # Crear un temporizador para actualizar el widget cada cierto tiempo
         self.timer = QTimer(self)
         self.timer.timeout.connect(lambda: self.update_widget(widget_type))
-        self.timer.start(5000)  # Intervalo de 5000 ms (5 segundos)
+        self.timer.start(5000)  # Intervalo de 5000 ms (5 segundos) 
 
     def update_widget(self, widget_type):
-        self.parent.update_active_widget()
+        print("Hola")
+        #self.parent.update_active_widget()
 
 
 class cerrarSesion(QPushButton):
@@ -110,8 +121,10 @@ class cerrarSesion(QPushButton):
 
 
 class MenuForm(QWidget):
-    def __init__(self):
+    def __init__(self, id_user, rol):
         super().__init__()
+        self.id_user = id_user
+        self.rol = rol
         self.setWindowTitle('Menu')
         self.setStyleSheet("background-color: #F5F5F5;")
 
@@ -142,7 +155,10 @@ class MenuForm(QWidget):
         self.active_widget_type = None
 
         # Cargar el menú desde el archivo XML
-        menu_items = self.load_menu_from_xml('Menus/Admin.xml')
+        if self.rol == "admin":
+            menu_items = self.load_menu_from_xml('Menus/Admin.xml')
+        else:
+            menu_items = self.load_menu_from_xml("Menus/Usuario.xml")
         self.generate_menu_buttons(
             menu_items, navbar_layout, self.contenedor_layout)
 
@@ -176,7 +192,7 @@ class MenuForm(QWidget):
             layout.addWidget(title_label)
             for option in section['options']:
                 # Pasar contenedor_layout y self como parámetros
-                button = OpcionMenu(option, contenedor_layout, self)
+                button = OpcionMenu(option, contenedor_layout, self.id_user, self)
                 layout.addWidget(button)
                 button_group.append(button)  # Agregar botón al grupo
 
@@ -211,7 +227,7 @@ class MenuForm(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    form = MenuForm()
+    form = MenuForm(id_user=1, rol="empleado")
     form.showMaximized()
     form.show()
     sys.exit(app.exec_())

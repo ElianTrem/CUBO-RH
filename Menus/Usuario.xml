@@ -2,7 +2,8 @@
 <menu>    
     <section title="Gestión de nominas">
         <option>Salario</option>
-        <option>Nomina mensual</option>        
+        <option>Nomina mensual</option>
+        <option>Calculadora prestaciones y descuentos</option>        
     </section>
     <section title="Gestión de horarios">
         <option>Ausencias</option>
@@ -11,5 +12,8 @@
     <section title="Evaluación de personal">
         <option>Ver mis Evaluaciones</option>
         <option>Realizar Evaluación</option>
+    </section>
+    <section title="Usuario">
+        <option>Cambiar contraseña</option>
     </section>
 </menu>

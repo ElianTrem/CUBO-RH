@@ -43,7 +43,7 @@ class DescriptionDialog(QDialog):
                 dbname='BDCUBO',
                 user='postgres',
                 password='postgres123',
-                host='localhost',  # Cambia esto si tu base de datos está en otro servidor
+                host='localhost',
                 port='5432'
             )
             cursor = conn.cursor()
