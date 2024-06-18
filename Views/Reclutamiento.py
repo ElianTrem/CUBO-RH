@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
 import threading
 import time
 from PyQt5.QtCore import Qt, QObject, pyqtSignal
-from AddEmpleado import EmpleadoDialog
+from AddCandidato import AddCandidato
 
 
 class ClickableLabel(QLabel):
@@ -37,10 +37,12 @@ def get_rows_from_database():
         cursor = conn.cursor()
         cursor.execute(
             """
-                SELECT e.id AS "ID", e.nombre AS "Nombre", d.nombre AS "Departamento", e.fecha_ingreso AS "Fecha de Inicio", 
-                CASE WHEN e.activo THEN 'Activo' ELSE 'Inactivo' END AS "Estado"
-                FROM empleados e
-                JOIN departamentos d ON e.departamento = d.nombre;
+                SELECT p.nombre AS puesto, d.nombre AS departamento, COALESCE(COUNT(pc.candidato_id), 0) AS cantidad_candidatos
+                FROM puestos p
+                JOIN puestos_departamentos pd ON p.id = pd.puesto_id
+                JOIN departamentos d ON pd.departamento_id = d.id
+                LEFT JOIN puestos_candidatos pc ON p.id = pc.puesto_id
+                GROUP BY p.nombre, d.nombre;
             """
         )
         rows = cursor.fetchall()
@@ -50,7 +52,7 @@ def get_rows_from_database():
     return rows
 
 
-class Expediente(QWidget):
+class Reclutamiento(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Menu")
@@ -61,8 +63,8 @@ class Expediente(QWidget):
         btn_widget = QWidget()  # Widget para contener el botón
         btn_layout = QVBoxLayout(btn_widget)
 
-        self.btn_nuevo_empleado = QPushButton("Nuevo Empleado")
-        self.btn_nuevo_empleado.setStyleSheet(
+        self.btn_postulacion = QPushButton("Nueva postulacion")
+        self.btn_postulacion.setStyleSheet(
             """
             QPushButton {
                 background-color: #FFFFFF;
@@ -81,21 +83,20 @@ class Expediente(QWidget):
             }
         """
         )
-        self.btn_nuevo_empleado.clicked.connect(self.open_employee_dialog)
-        btn_layout.addWidget(self.btn_nuevo_empleado)
+        self.btn_postulacion.clicked.connect(self.open_AddCandidato)
+        btn_layout.addWidget(self.btn_postulacion)
 
         # Agregar el widget del botón al diseño principal
         main_layout.addWidget(btn_widget)
 
-        self.headers = ["ID", "Nombre", "Departamento",
-                        "Fecha de Inicio", "Estado"]
+        self.headers = ["Puesto", "Departamento", "Candidatos"]
         # Anchos fijos para cada columna
         self.widths = [50, 200, 200, 200, 100]
 
         self.load_data()  # Cargar los datos al inicio
 
-    def open_employee_dialog(self):
-        dialog = EmpleadoDialog()
+    def open_AddCandidato(self):
+        dialog = AddCandidato()
         dialog.exec_()
 
     def load_data(self):
@@ -110,7 +111,7 @@ class Expediente(QWidget):
         # Agregar el widget del botón
         btn_widget = QWidget()  # Widget para contener el botón
         btn_layout = QVBoxLayout(btn_widget)
-        btn_layout.addWidget(self.btn_nuevo_empleado)
+        btn_layout.addWidget(self.btn_postulacion)
         main_layout.addWidget(btn_widget)
 
         # Agregar encabezados
@@ -168,6 +169,6 @@ class Expediente(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    form = Expediente()
+    form = Reclutamiento()
     form.show()
     sys.exit(app.exec_())

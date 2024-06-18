@@ -1,15 +1,19 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
-from Expediente_Form import Expediente 
+from Expediente_Form import Expediente
 from Descuentos_Prestaciones import Descuentos_Pestaciones
+from Reclutamiento import Reclutamiento
+
 
 class OpcionMenu(QPushButton):
     def __init__(self, text, contenedor_layout, parent=None):
         super().__init__(text, parent)
-        self.contenedor_layout = contenedor_layout  # Guardar el contenedor_layout como atributo
+        self.texto = text
+        self.contenedor_layout = contenedor_layout
+        self.parent = parent
         self.setCheckable(True)
         self.setStyleSheet("""
             QPushButton {
@@ -29,6 +33,7 @@ class OpcionMenu(QPushButton):
             }
         """)
         self.clicked.connect(self.on_clicked)
+        self.timer = None
 
     def on_clicked(self):
         # Desmarcar todos los botones del grupo
@@ -43,15 +48,42 @@ class OpcionMenu(QPushButton):
             if child.widget():
                 child.widget().deleteLater()
 
+        # Detener el temporizador si ya existe
+        if self.timer and self.timer.isActive():
+            self.timer.stop()
+
+        # Agregar el widget correspondiente y configurar el temporizador
         if self.text() == "Descriptor de puestos":
-            self.contenedor_layout.addWidget(Descriptor())
+            widget = Descriptor()
+            self.contenedor_layout.addWidget(widget)
+            self.start_timer("Descriptor")
         elif self.text() == "Expediente de trabajadores":
-            self.contenedor_layout.addWidget(Expediente())
+            widget = Expediente()
+            self.contenedor_layout.addWidget(widget)
+            self.start_timer("Expediente")
+        elif self.text() == "Reclutamiento":
+            widget = Reclutamiento()
+            self.contenedor_layout.addWidget(widget)
+            self.start_timer("Reclutamiento")
         elif self.text() == "Calcular prestaciones y descuentos":
             self.contenedor_layout.addWidget(Descuentos_Pestaciones())
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
-            self.contenedor_layout.addWidget(QWidget())
+            widget = QWidget()
+            self.contenedor_layout.addWidget(widget)
+
+        # Actualizar el widget activo en el padre
+        self.parent.set_active_widget(self.texto, widget)
+
+    def start_timer(self, widget_type):
+        # Crear un temporizador para actualizar el widget cada cierto tiempo
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(lambda: self.update_widget(widget_type))
+        self.timer.start(5000)  # Intervalo de 5000 ms (5 segundos)
+
+    def update_widget(self, widget_type):
+        self.parent.update_active_widget()
+
 
 class cerrarSesion(QPushButton):
     def __init__(self, text, parent=None):
@@ -76,6 +108,7 @@ class cerrarSesion(QPushButton):
             }
         """)
 
+
 class MenuForm(QWidget):
     def __init__(self):
         super().__init__()
@@ -84,7 +117,8 @@ class MenuForm(QWidget):
 
         # Crear la "card"
         card_widget = QWidget(self)
-        card_widget.setStyleSheet("background-color: white; border-radius: 8px; ")
+        card_widget.setStyleSheet(
+            "background-color: white; border-radius: 8px; ")
         card_layout = QHBoxLayout(card_widget)
 
         # Agregar dos widgets (Navbar y ContenedorDinamico) a la "card" con sus propios layouts
@@ -99,12 +133,18 @@ class MenuForm(QWidget):
         # Crear layouts para Navbar y ContenedorDinamico
         navbar_layout = QVBoxLayout(Navbar)
         navbar_layout.setSpacing(8)  # Espacio de 20 px entre elementos
-        navbar_layout.setAlignment(Qt.AlignTop)  # Alinear elementos en la parte superior
+        # Alinear elementos en la parte superior
+        navbar_layout.setAlignment(Qt.AlignTop)
         self.contenedor_layout = QVBoxLayout(ContenedorDinamico)
+
+        # Inicializar el widget activo
+        self.active_widget = None
+        self.active_widget_type = None
 
         # Cargar el menú desde el archivo XML
         menu_items = self.load_menu_from_xml('Menus/Admin.xml')
-        self.generate_menu_buttons(menu_items, navbar_layout, self.contenedor_layout)
+        self.generate_menu_buttons(
+            menu_items, navbar_layout, self.contenedor_layout)
 
         card_layout.addWidget(Navbar)
         card_layout.addWidget(ContenedorDinamico)
@@ -130,16 +170,44 @@ class MenuForm(QWidget):
         button_group = []  # Inicializar el grupo de botones
         for section in menu_items:
             title_label = QLabel(section['title'])
-            title_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #000000;")
+            title_label.setStyleSheet(
+                "font-size: 18px; font-weight: bold; color: #000000;")
             title_label.setAlignment(Qt.AlignCenter)
             layout.addWidget(title_label)
             for option in section['options']:
-                button = OpcionMenu(option, contenedor_layout)  # Pasar contenedor_layout como parámetro
+                # Pasar contenedor_layout y self como parámetros
+                button = OpcionMenu(option, contenedor_layout, self)
                 layout.addWidget(button)
                 button_group.append(button)  # Agregar botón al grupo
 
         layout.addWidget(cerrarSesion("Cerrar Sesión"))
         layout.addStretch()  # Agregar un stretch al final para empujar los elementos hacia arriba
+
+    def set_active_widget(self, widget_type, widget_instance):
+        self.active_widget_type = widget_type
+        self.active_widget = widget_instance
+
+    def update_active_widget(self):
+        # Eliminar el widget actual
+        while self.contenedor_layout.count():
+            child = self.contenedor_layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+        # Crear y agregar una nueva instancia del widget activo
+        if self.active_widget_type == "Descriptor de puestos":
+            widget = Descriptor()
+        elif self.active_widget_type == "Expediente de trabajadores":
+            widget = Expediente()
+        elif self.active_widget_type == "Reclutamiento":
+            widget = Reclutamiento()
+        else:
+            widget = QWidget()
+        self.contenedor_layout.addWidget(widget)
+        print(f"Actualizando widget: {self.active_widget_type}")
+        # Actualizar la referencia del widget activo
+        self.active_widget = widget
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

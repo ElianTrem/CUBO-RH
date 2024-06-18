@@ -1,7 +1,7 @@
 import sys
 import psycopg2
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton,
+    QApplication, QDialog, QVBoxLayout, QWidget, QPushButton,
     QLabel, QLineEdit, QMessageBox, QMenu, QAction
 )
 from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -122,7 +122,7 @@ class DropDown(QPushButton):
         self.setChecked(False)
 
 
-class MainWindow(QMainWindow):
+class AddPuesto(QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Agregar Puesto")
@@ -180,9 +180,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.webview)
         layout.addWidget(self.save_button)
 
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
+        self.setLayout(layout)
 
         # Create a QWebChannel and register content receiver object
         self.channel = QWebChannel()
@@ -253,8 +251,12 @@ class MainWindow(QMainWindow):
             self.webview.page().runJavaScript("sendContentToPython()")
 
 
+def show_add_puesto():
+    dialog = AddPuesto()
+    dialog.exec_()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    show_add_puesto()
     sys.exit(app.exec_())
