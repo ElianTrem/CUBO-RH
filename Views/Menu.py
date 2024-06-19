@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
 from Expediente_Form import Expediente
@@ -10,7 +10,7 @@ from Reclutamiento import Reclutamiento
 from CambioContrasena import ChangePasswordForm
 from Seguimiento_Candidato import Seguimiento
 from EmpleadoNominas import EmpleadoNominas
-from EvaluacionPuesto import Cuestionario
+from Asistencias import Asistenciasfrom EvaluacionPuesto import Cuestionario
 
 
 class OpcionMenu(QPushButton):
@@ -73,6 +73,9 @@ class OpcionMenu(QPushButton):
             self.contenedor_layout.addWidget(widget)
         elif self.text() == "Empleados y Nominas":
             widget = EmpleadoNominas()
+            self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Asistencias":
+            widget = Asistencias(self.id_user)
             self.contenedor_layout.addWidget(widget)
         elif self.text() == "Cuestionario de Evaluación":
             widget = Cuestionario(self.id_user)
