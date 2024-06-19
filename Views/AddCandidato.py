@@ -41,7 +41,7 @@ class ContentReceiver(QObject):
         puesto_nombre = self.window.puestos_dropdown.text()
         departamento_nombre = self.window.departamentos_dropdown.text()
         titulo_academico_nombre = self.window.titulos_dropdown.text()
-        estado_nombre = window.estados_dropdown.text()
+        estado_nombre = self.window.estados_dropdown.text()
 
         # Obtener el ID del puesto seleccionado
         self.cursor.execute(
@@ -77,8 +77,6 @@ class ContentReceiver(QObject):
             'success', 'Éxito', 'El candidato se ha guardado correctamente.'
         )
         success_dialog.exec_()
-        # Cerrar la ventana
-        window.close()
 
     def update_candidato(self, content):
         # Lógica para actualizar un candidato existente en la base de datos

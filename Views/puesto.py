@@ -11,8 +11,9 @@ from dialog import QuickAlert  # Importar libreria de diálogos
 
 
 class ContentReceiver(QObject):
-    def __init__(self):
+    def __init__(self, window):
         super().__init__()
+        self.window = window
         self.conn = psycopg2.connect(
             dbname='BDCUBO',
             user='postgres',
@@ -26,13 +27,13 @@ class ContentReceiver(QObject):
     def receiveContent(self, content):
         print("Content received from CKEditor:", content)
         # Verificar si se ha ingresado el nombre del puesto
-        if window.job_title_input.text() == "":
+        if self.window.job_title_input.text() == "":
             error_dialog = QuickAlert(
                 'error', 'Error', 'Por favor, Ingrese el nombre del puesto.')
             error_dialog.exec_()
         else:
-            job_title = window.job_title_input.text()
-            department = window.departments_dropdown.text()
+            job_title = self.window.job_title_input.text()
+            department = self.window.departments_dropdown.text()
             # Guardar el contenido en la base de datos
             self.cursor.execute(
                 "INSERT INTO puestos (nombre, descripcion_markdown) VALUES (%s, %s)",
@@ -43,7 +44,7 @@ class ContentReceiver(QObject):
                 'success', 'Éxito', 'El puesto se ha guardado correctamente.')
             success_dialog.exec_()
             # Cerrar la ventana
-            window.close()
+            self.window.close()
 
 
 class DropDown(QPushButton):
@@ -184,7 +185,7 @@ class AddPuesto(QDialog):
 
         # Create a QWebChannel and register content receiver object
         self.channel = QWebChannel()
-        self.content_receiver = ContentReceiver()
+        self.content_receiver = ContentReceiver(self)
         self.channel.registerObject("pywebchannel", self.content_receiver)
         self.webview.page().setWebChannel(self.channel)
 
