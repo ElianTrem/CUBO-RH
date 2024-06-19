@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<menu>    
+<menu>
     <section title="Gestión de nominas">
         <option>Salario</option>
         <option>Nomina mensual</option>
-        <option>Calculadora prestaciones y descuentos</option>        
+        <option>Calculadora prestaciones y descuentos</option>
     </section>
     <section title="Gestión de horarios">
-        <option>Ausencias</option>
+        <option>Asistencias</option>
         <option>Horas extras</option>
     </section>
     <section title="Evaluación de personal">
