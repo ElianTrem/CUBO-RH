@@ -1,14 +1,11 @@
 import sys
 import psycopg2
 from PyQt5.QtWidgets import (
-    QApplication,
-    QWidget,
-    QVBoxLayout,
-    QGridLayout,
-    QLabel
+    QApplication, QWidget, QVBoxLayout, QLabel
 )
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QFont
+from Asistencias_Empleado import AttendanceView  # Asegúrate de que el archivo esté en el mismo directorio
 
 class ClickableLabel(QLabel):
     clicked = pyqtSignal()
@@ -41,10 +38,12 @@ def get_rows_from_database(departamento):
 class Empleado_Asis(QWidget):
     def __init__(self, departamento):
         super().__init__()
+        self.child_windows = []
         self.setStyleSheet("background-color: #FFFFFF;")
         self.departamento = departamento
         self.setWindowTitle('Listado de Empleados')
         self.setStyleSheet('background-color: #FFFFFF; border-radius: 15px;')
+        self.setFixedSize(400, 600)  # Ajusta el tamaño de la ventana
 
         # Asigna un layout a este widget
         self.main_layout = QVBoxLayout(self)
@@ -86,7 +85,9 @@ class Empleado_Asis(QWidget):
         self.main_layout.addStretch()
 
     def on_label_click(self, name):
-        print(f"Nombre del empleado: {name}")
+        form = AttendanceView(name)
+        self.child_windows.append(form)  # Mantén una referencia a la ventana
+        form.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

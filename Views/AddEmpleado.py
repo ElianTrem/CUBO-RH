@@ -237,6 +237,8 @@ class EmpleadoDialog(QDialog):
         fecha_ingreso = self.fecha_edit.date().toString("yyyy-MM-dd")
         email = self.email_input.text()
         activo = self.active_checkbox.isChecked()
+        contraseña = "cubo123"
+        puesto = "empleado"
 
         if not self.validate_email(email):
             error_dialog = QuickAlert(
@@ -253,6 +255,7 @@ class EmpleadoDialog(QDialog):
                 port='5432'
             )
             cursor = conn.cursor()
+            cursor2 = conn.cursor()
 
             if self.employee_id:
                 cursor.execute("""
@@ -265,6 +268,12 @@ class EmpleadoDialog(QDialog):
                     INSERT INTO empleados (nombre, departamento, puesto_trabajo, fecha_ingreso, email, activo)
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """, (nombre, departamento, puesto_trabajo, fecha_ingreso, email, activo))
+                cursor2.execute("SELECT id from empleados WHERE nombre = %s", (nombre,))
+                id_empleado = cursor2.fetchone()
+                cursor.execute("""
+                    INSERT INTO usuarios(correo, contrasena, id_empleado, rol)
+	                VALUES (%s, %s, %s, %s);
+                """, (email, contraseña, id_empleado,puesto,))
 
             conn.commit()
             conn.close()

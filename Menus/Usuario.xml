@@ -2,12 +2,11 @@
 <menu>
     <section title="Gestión de nominas">
         <option>Salario</option>
-        <option>Nomina mensual</option>
         <option>Calculadora prestaciones y descuentos</option>
     </section>
     <section title="Gestión de horarios">
-        <option>Asistencias</option>
-        <option>Horas extras</option>
+        <option>Tus asistencias</option>
+        <option>Marcar Asistencia</option>
     </section>
     <section title="Evaluación de personal">
         <option>Ver mis Evaluaciones</option>

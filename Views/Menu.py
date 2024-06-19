@@ -2,6 +2,8 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 from PyQt5.QtCore import Qt, QTimer
 import xml.etree.ElementTree as ET
+
+import psycopg2
 from DescForm import Descriptor
 from Expediente_Form import Expediente
 from Descuentos_Prestaciones import Descuentos_Pestaciones
@@ -11,11 +13,14 @@ from CambioContrasena import ChangePasswordForm
 from Seguimiento_Candidato import Seguimiento
 from EmpleadoNominas import EmpleadoNominas
 from Asistencias import Asistencias
+from Asistencias_Empleado import AttendanceView
+from AsistenciaDia import AttendanceWidget
 
 class OpcionMenu(QPushButton):
-    def __init__(self, text, contenedor_layout, id_user, parent=None):
+    def __init__(self, text, contenedor_layout, id_user, id_empleado, parent=None):
         super().__init__(text, parent)
         self.id_user = id_user
+        self.id_empleado = id_empleado
         self.texto = text
         self.contenedor_layout = contenedor_layout
         self.parent = parent
@@ -76,6 +81,13 @@ class OpcionMenu(QPushButton):
         elif self.text() == "Asistencias":
             widget = Asistencias(self.id_user)
             self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Tus asistencias":
+            puesto = self.obtener_puesto(self.id_empleado)
+            widget = AttendanceView(puesto[0])
+            self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Marcar Asistencia":
+            widget = AttendanceWidget(self.id_user)
+            self.contenedor_layout.addWidget(widget)
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
             widget = QWidget()
@@ -83,6 +95,25 @@ class OpcionMenu(QPushButton):
 
         # Actualizar el widget activo en el padre
         self.parent.set_active_widget(self.texto, widget)
+    
+    def obtener_puesto(self, id_empleado):
+        row = None
+        try:
+            conn = psycopg2.connect(
+                dbname="BDCUBO",
+                user="postgres",
+                password="postgres123",
+                host="localhost",
+                port="5432",
+            )
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT nombre, puesto_trabajo FROM empleados WHERE id = %s", (id_empleado,))
+            row = cursor.fetchone()
+            conn.close()
+        except psycopg2.Error as e:
+            print(f"Error al conectar a la base de datos: {e}")
+        return row
 
     def start_timer(self, widget_type):
         # Crear un temporizador para actualizar el widget cada cierto tiempo
@@ -120,10 +151,11 @@ class cerrarSesion(QPushButton):
 
 
 class MenuForm(QWidget):
-    def __init__(self, id_user, rol):
+    def __init__(self, id_user, rol, id_empleado):
         super().__init__()
         self.id_user = id_user
         self.rol = rol
+        self.id_empleado = id_empleado
         self.setWindowTitle('Menu')
         self.setStyleSheet("background-color: #F5F5F5;")
 
@@ -192,7 +224,7 @@ class MenuForm(QWidget):
             for option in section['options']:
                 # Pasar contenedor_layout y self como parámetros
                 button = OpcionMenu(
-                    option, contenedor_layout, self.id_user, self)
+                    option, contenedor_layout, self.id_user, self.id_empleado, self)
                 layout.addWidget(button)
                 button_group.append(button)  # Agregar botón al grupo
 
@@ -256,7 +288,7 @@ class MenuForm(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    form = MenuForm(id_user=1, rol="admin")
+    form = MenuForm(id_user=3, rol="empleado", id_empleado=5)
     form.showMaximized()
     form.show()
     sys.exit(app.exec_())

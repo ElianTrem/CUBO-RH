@@ -36,6 +36,7 @@ class Asistencias(QWidget):
 
         self.buscar_button = addBtn('Buscar')
         self.buscar_button.setFixedWidth(90)
+        #self.buscar_button.clicked.connect(self.update_active_widget)
         grid_layout.addWidget(self.buscar_button, 0, 2, 1, 2)
 
         layout.addLayout(grid_layout)
@@ -103,27 +104,6 @@ class Asistencias(QWidget):
     def on_completer_activated(self, text):
         print(f"Empleado seleccionado: {text}")
 
-    def obtener_salario_empleado(self, nombre_empleado):
-        try:
-            conn = psycopg2.connect(
-                dbname='BDCUBO',
-                user='postgres',
-                password='postgres123',
-                host='localhost',
-                port='5432'
-            )
-            cursor = conn.cursor()
-            cursor.execute("SELECT salario FROM empleados WHERE nombre = %s", (nombre_empleado,))
-            empleado_salario = cursor.fetchone()
-            conn.close()
-            if empleado_salario:
-                return empleado_salario[0]
-            else:
-                return None
-        except psycopg2.Error as e:
-            print(f"Error al conectar a la base de datos: {e}")
-            return None
-
     def obtener_id_empleado(self, nombre_empleado):
         try:
             conn = psycopg2.connect(
@@ -141,24 +121,6 @@ class Asistencias(QWidget):
                 return empleado_id[0]
             else:
                 return None
-        except psycopg2.Error as e:
-            print(f"Error al conectar a la base de datos: {e}")
-            return None
-
-    def obtener_cantidad_asistencias(self, empleado_id):
-        try:
-            conn = psycopg2.connect(
-                dbname='BDCUBO',
-                user='postgres',
-                password='postgres123',
-                host='localhost',
-                port='5432'
-            )
-            cursor = conn.cursor()
-            cursor.execute("SELECT COUNT(*) AS cantidad_asistencias FROM asistencias WHERE empleado_id = %s", (empleado_id,))
-            cantidad_asistencias = cursor.fetchone()[0]
-            conn.close()
-            return cantidad_asistencias
         except psycopg2.Error as e:
             print(f"Error al conectar a la base de datos: {e}")
             return None
