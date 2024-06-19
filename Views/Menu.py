@@ -15,6 +15,8 @@ from EmpleadoNominas import EmpleadoNominas
 from Asistencias import Asistencias
 from Asistencias_Empleado import AttendanceView
 from AsistenciaDia import AttendanceWidget
+from EvaluacionPuesto import Cuestionario
+
 
 class OpcionMenu(QPushButton):
     def __init__(self, text, contenedor_layout, id_user, id_empleado, parent=None):
@@ -87,6 +89,8 @@ class OpcionMenu(QPushButton):
             self.contenedor_layout.addWidget(widget)
         elif self.text() == "Marcar Asistencia":
             widget = AttendanceWidget(self.id_user)
+        elif self.text() == "Cuestionario de Evaluación":
+            widget = Cuestionario(self.id_user)
             self.contenedor_layout.addWidget(widget)
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
@@ -124,30 +128,6 @@ class OpcionMenu(QPushButton):
     def update_widget(self, widget_type):
         print("Hola")
         # self.parent.update_active_widget()
-
-
-class cerrarSesion(QPushButton):
-    def __init__(self, text, parent=None):
-        super().__init__(text, parent)
-        self.setCheckable(True)
-        self.setStyleSheet("""
-            QPushButton {
-                background-color: #FFFFFF;
-                font-size: 14px;
-                color: #000000;
-                border-radius: 12px;
-                border: 1px solid #E11313;
-                min-width: 20px;
-                max-height: 50px;
-                min-height: 37px;
-            }
-            QPushButton:hover {
-                background-color: #E11313;
-            }
-            QPushButton:pressed {
-                background-color: #CA4040;
-            }
-        """)
 
 
 class MenuForm(QWidget):
@@ -251,12 +231,35 @@ class MenuForm(QWidget):
         update_button.clicked.connect(self.update_active_widget)
         layout.addWidget(update_button)
 
-        layout.addWidget(cerrarSesion("Cerrar Sesión"))
+        cerrar_sesion = QPushButton("Cerrar Sesión")
+        cerrar_sesion.setStyleSheet("""
+            QPushButton {
+                background-color: #FFFFFF;
+                font-size: 14px;
+                color: #000000;
+                border-radius: 12px;
+                border: 1px solid #E11313;
+                min-width: 20px;
+                max-height: 50px;
+                min-height: 37px;
+            }
+            QPushButton:hover {
+                background-color: #E11313;
+            }
+            QPushButton:pressed {
+                background-color: #CA4040;
+            }
+        """)
+        cerrar_sesion.clicked.connect(self.cerrar)
+        layout.addWidget(cerrar_sesion)
         layout.addStretch()  # Agregar un stretch al final para empujar los elementos hacia arriba
 
     def set_active_widget(self, widget_type, widget_instance):
         self.active_widget_type = widget_type
         self.active_widget = widget_instance
+
+    def cerrar(self):
+        self.close()
 
     def update_active_widget(self):
         # Eliminar el widget actual
@@ -278,6 +281,8 @@ class MenuForm(QWidget):
             widget = Descuentos_Pestaciones()
         elif self.active_widget_type == "Empleados y Nominas":
             widget = EmpleadoNominas()
+        elif self.active_widget_type == "Cuestionario de Evaluación":
+            widget = Cuestionario(self.id_user)
         else:
             widget = QWidget()
         self.contenedor_layout.addWidget(widget)
