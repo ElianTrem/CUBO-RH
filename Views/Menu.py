@@ -10,7 +10,8 @@ from Reclutamiento import Reclutamiento
 from CambioContrasena import ChangePasswordForm
 from Seguimiento_Candidato import Seguimiento
 from EmpleadoNominas import EmpleadoNominas
-from Asistencias import Asistenciasfrom EvaluacionPuesto import Cuestionario
+from Asistencias import Asistencias
+from EvaluacionPuesto import Cuestionario
 
 
 class OpcionMenu(QPushButton):
