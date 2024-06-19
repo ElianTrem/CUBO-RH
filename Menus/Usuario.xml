@@ -10,8 +10,7 @@
         <option>Horas extras</option>
     </section>
     <section title="Evaluación de personal">
-        <option>Ver mis Evaluaciones</option>
-        <option>Realizar Evaluación</option>
+        <option>Cuestionario de Evaluación</option>
     </section>
     <section title="Usuario">
         <option>Cambiar contraseña</option>

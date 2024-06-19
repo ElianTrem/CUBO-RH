@@ -1,1 +1,0 @@
-active_widget_type
