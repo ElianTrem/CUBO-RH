@@ -16,6 +16,7 @@ from Asistencias import Asistencias
 from Asistencias_Empleado import AttendanceView
 from AsistenciaDia import AttendanceWidget
 from EvaluacionPuesto import Cuestionario
+from reporte_evaluacion import RepEvaluacion
 
 
 class OpcionMenu(QPushButton):
@@ -92,6 +93,9 @@ class OpcionMenu(QPushButton):
         elif self.text() == "Cuestionario de Evaluación":
             widget = Cuestionario(self.id_user)
             self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Reporte de Evaluaciones":
+            widget = RepEvaluacion()
+            self.contenedor_layout.addWidget(widget)
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
             widget = QWidget()
@@ -99,7 +103,7 @@ class OpcionMenu(QPushButton):
 
         # Actualizar el widget activo en el padre
         self.parent.set_active_widget(self.texto, widget)
-    
+
     def obtener_puesto(self, id_empleado):
         row = None
         try:
@@ -283,6 +287,8 @@ class MenuForm(QWidget):
             widget = EmpleadoNominas()
         elif self.active_widget_type == "Cuestionario de Evaluación":
             widget = Cuestionario(self.id_user)
+        elif self.active_widget_type == "Reporte de Evaluaciones":
+            widget = RepEvaluacion()
         else:
             widget = QWidget()
         self.contenedor_layout.addWidget(widget)
