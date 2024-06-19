@@ -8,6 +8,7 @@ from Descuentos_Prestaciones import Descuentos_Pestaciones
 from Calculadora import Calcu
 from Reclutamiento import Reclutamiento
 from CambioContrasena import ChangePasswordForm
+from Seguimiento_Candidato import Seguimiento
 
 
 class OpcionMenu(QPushButton):
@@ -57,6 +58,8 @@ class OpcionMenu(QPushButton):
             widget = Expediente()
         elif self.text() == "Reclutamiento":
             widget = Reclutamiento()
+        elif self.text() == "Seguimiento de candidatos":
+            widget = Seguimiento()
         elif self.text() == "Calcular prestaciones y descuentos":
             widget = Descuentos_Pestaciones()
             self.contenedor_layout.addWidget(widget)
@@ -78,11 +81,11 @@ class OpcionMenu(QPushButton):
         # Crear un temporizador para actualizar el widget cada cierto tiempo
         self.timer = QTimer(self)
         self.timer.timeout.connect(lambda: self.update_widget(widget_type))
-        self.timer.start(5000)  # Intervalo de 5000 ms (5 segundos) 
+        self.timer.start(5000)  # Intervalo de 5000 ms (5 segundos)
 
     def update_widget(self, widget_type):
         print("Hola")
-        #self.parent.update_active_widget()
+        # self.parent.update_active_widget()
 
 
 class cerrarSesion(QPushButton):
@@ -181,7 +184,8 @@ class MenuForm(QWidget):
             layout.addWidget(title_label)
             for option in section['options']:
                 # Pasar contenedor_layout y self como parámetros
-                button = OpcionMenu(option, contenedor_layout, self.id_user, self)
+                button = OpcionMenu(
+                    option, contenedor_layout, self.id_user, self)
                 layout.addWidget(button)
                 button_group.append(button)  # Agregar botón al grupo
 
@@ -229,6 +233,8 @@ class MenuForm(QWidget):
             widget = Expediente()
         elif self.active_widget_type == "Reclutamiento":
             widget = Reclutamiento()
+        elif self.active_widget_type == "Seguimiento de candidatos":
+            widget = Seguimiento()
         elif self.active_widget_type == "Calcular prestaciones y descuentos":
             widget = Descuentos_Pestaciones()
         else:

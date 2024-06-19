@@ -12,8 +12,9 @@ from dialog import QuickAlert  # Importar libreria de diálogos
 
 
 class ContentReceiver(QObject):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.window = parent
         self.conn = psycopg2.connect(
             dbname='BDCUBO',
             user='postgres',
@@ -26,55 +27,87 @@ class ContentReceiver(QObject):
     @pyqtSlot(str)
     def receiveContent(self, content):
         print("Content received from CKEditor:", content)
-        # Verificar si se ha ingresado el nombre del puesto
-        if window.job_title_input.text() == "":
-            error_dialog = QuickAlert(
-                'error', 'Error', 'Por favor, Ingrese el nombre del puesto.')
-            error_dialog.exec_()
-        else:
-            nombre = window.job_title_input.text()
-            email = window.email_input.text()
-            telefono = window.phone_input.text()
-            puesto_nombre = window.puestos_dropdown.text()
-            departamento_nombre = window.departamentos_dropdown.text()
-            titulo_academico_nombre = window.titulos_dropdown.text()
-            estado_nombre = window.estados_dropdown.text()
+        # Verificar si se está editando un candidato existente o creando uno nuevo
+        if self.window.candidato_id:  # Si candidato_id está presente, se está editando un candidato existente
+            self.update_candidato(content)
+        else:  # Si no hay candidato_id, se está creando un nuevo candidato
+            self.insert_candidato(content)
 
-            # Obtener el ID del puesto seleccionado
-            self.cursor.execute(
-                "SELECT id FROM puestos WHERE nombre = %s", (puesto_nombre,))
-            puesto_id = self.cursor.fetchone()[0]
+    def insert_candidato(self, content):
+        # Lógica para insertar un nuevo candidato en la base de datos
+        nombre = self.window.job_title_input.text()
+        email = self.window.mail_input.text()
+        telefono = self.window.phone_input.text()
+        puesto_nombre = self.window.puestos_dropdown.text()
+        departamento_nombre = self.window.departamentos_dropdown.text()
+        titulo_academico_nombre = self.window.titulos_dropdown.text()
+        estado_nombre = window.estados_dropdown.text()
 
-            # Obtener el ID del departamento seleccionado
-            self.cursor.execute(
-                "SELECT id FROM departamentos WHERE nombre = %s", (departamento_nombre,))
-            departamento_id = self.cursor.fetchone()[0]
+        # Obtener el ID del puesto seleccionado
+        self.cursor.execute(
+            "SELECT id FROM puestos WHERE nombre = %s", (puesto_nombre,))
+        puesto_id = self.cursor.fetchone()[0]
 
-            # Obtener el ID del título académico seleccionado
-            self.cursor.execute(
-                "SELECT id FROM titulos_academicos WHERE titulo = %s", (titulo_academico_nombre,))
-            titulo_academico_id = self.cursor.fetchone()[0]
+        # Obtener el ID del departamento seleccionado
+        self.cursor.execute(
+            "SELECT id FROM departamentos WHERE nombre = %s", (departamento_nombre,))
+        departamento_id = self.cursor.fetchone()[0]
 
-            # Obtener el ID del estado seleccionado
-            self.cursor.execute(
-                "SELECT id FROM estados WHERE estado = %s", (estado_nombre,))
-            estado_id = self.cursor.fetchone()[0]
+        # Obtener el ID del título académico seleccionado
+        self.cursor.execute(
+            "SELECT id FROM titulos_academicos WHERE titulo = %s", (titulo_academico_nombre,))
+        titulo_academico_id = self.cursor.fetchone()[0]
 
-            # Guardar el contenido en la tabla candidatos
-            self.cursor.execute(
-                """
-                INSERT INTO candidatos (nombre, email, telefono, puesto_id, departamento_id, titulo_academico_id, resumen_postulacion, estado_id)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                """,
-                (nombre, email, telefono, puesto_id, departamento_id,
-                 titulo_academico_id, content, estado_id)
-            )
-            self.conn.commit()
-            success_dialog = QuickAlert(
-                'success', 'Éxito', 'El candidato se ha guardado correctamente.')
-            success_dialog.exec_()
-            # Cerrar la ventana
-            window.close()
+        # Obtener el ID del estado seleccionado
+        self.cursor.execute(
+            "SELECT id FROM estados WHERE estado = %s", (estado_nombre,))
+        estado_id = self.cursor.fetchone()[0]
+
+        # Insertar el nuevo candidato en la tabla candidatos
+        self.cursor.execute(
+            """
+            INSERT INTO candidatos (nombre, email, telefono, puesto_id, departamento_id, titulo_academico_id, resumen_postulacion, estado_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (nombre, email, telefono, puesto_id, departamento_id,
+             titulo_academico_id, content, estado_id)
+        )
+        self.conn.commit()
+        success_dialog = QuickAlert(
+            'success', 'Éxito', 'El candidato se ha guardado correctamente.'
+        )
+        success_dialog.exec_()
+        # Cerrar la ventana
+        window.close()
+
+    def update_candidato(self, content):
+        # Lógica para actualizar un candidato existente en la base de datos
+        nombre = self.window.job_title_input.text()
+        email = self.window.mail_input.text()
+        telefono = self.window.phone_input.text()
+        estado_nombre = self.window.estados_dropdown.text()
+
+        # Obtener el ID del estado seleccionado
+        self.cursor.execute(
+            "SELECT id FROM estados WHERE estado = %s", (estado_nombre,))
+        estado_id = self.cursor.fetchone()[0]
+
+        # Actualizar los datos del candidato en la tabla candidatos
+        self.cursor.execute(
+            """
+            UPDATE candidatos
+            SET nombre = %s, email = %s, telefono = %s, resumen_postulacion = %s, estado_id = %s
+            WHERE id = %s
+            """,
+            (nombre, email, telefono, content, estado_id, self.window.candidato_id)
+        )
+        self.conn.commit()
+        success_dialog = QuickAlert(
+            'success', 'Éxito', 'El candidato se ha actualizado correctamente.'
+        )
+        success_dialog.exec_()
+        # Cerrar la ventana
+        self.window.close()
 
 
 class DropDown(QPushButton):
@@ -151,9 +184,15 @@ class DropDown(QPushButton):
 
 
 class AddCandidato(QDialog):
-    def __init__(self):
+    # Modificar la inicialización para aceptar candidato_id
+    def __init__(self, candidato_id=None):
         super().__init__()
-        self.setWindowTitle("Agregar Candidato")
+        self.candidato_id = candidato_id
+        # if para poner el titulo de la ventana dependiendo si se va a agregar o editar un candidato
+        if candidato_id:
+            self.setWindowTitle("Editar Candidato")
+        else:
+            self.setWindowTitle("Agregar Candidato")
         self.setFixedSize(QSize(800, 600))
 
         # Create the WebView
@@ -259,17 +298,18 @@ class AddCandidato(QDialog):
         main_layout.addWidget(self.save_button)
 
         self.setLayout(main_layout)
+        if candidato_id:
+            self.load_candidato_data(candidato_id)
 
         # Create a QWebChannel and register content receiver object
         self.channel = QWebChannel()
-        self.content_receiver = ContentReceiver()
+        self.content_receiver = ContentReceiver(self)
         self.channel.registerObject("pywebchannel", self.content_receiver)
         self.webview.page().setWebChannel(self.channel)
 
     def load_ckeditor(self):
-        # Load content from 'Ejemplo.txt'
-        with open("tx/vacio.txt", "r", encoding="utf-8") as file:
-            content = file.read()
+        # cargamos el contenido vacio o traido desde la bd al ckeditor
+        content = ""
 
         html_content = f"""
         <!DOCTYPE html>
@@ -332,13 +372,109 @@ class AddCandidato(QDialog):
             # Run JavaScript function to get content from CKEditor and send it to Python
             self.webview.page().runJavaScript("sendContentToPython()")
 
+    def load_candidato_data(self, candidato_id):
+        try:
+            conn = psycopg2.connect(
+                dbname='BDCUBO',
+                user='postgres',
+                password='postgres123',
+                host='localhost',
+                port='5432'
+            )
+            cursor = conn.cursor()
 
-def show_add_candidato():
-    dialog = AddCandidato()
-    dialog.exec_()
+            # Obtener los datos del candidato utilizando el ID proporcionado
+            cursor.execute("""
+                SELECT c.nombre, c.email, c.telefono, c.puesto_id, c.departamento_id,
+                c.titulo_academico_id, c.resumen_postulacion, c.estado_id,
+                p.nombre AS puesto_nombre, d.nombre AS departamento_nombre,
+                t.titulo AS titulo_academico_nombre, e.estado AS estado_nombre
+                FROM candidatos c
+                JOIN puestos p ON c.puesto_id = p.id
+                JOIN departamentos d ON c.departamento_id = d.id
+                JOIN titulos_academicos t ON c.titulo_academico_id = t.id
+                JOIN estados e ON c.estado_id = e.id
+                WHERE c.id = %s
+            """, (candidato_id,))
+            candidato_data = cursor.fetchone()
+
+            if candidato_data:  # Si se encontraron datos para el candidato
+                # Cargar los datos en los widgets correspondientes de la vista
+                self.job_title_input.setText(candidato_data[0])
+                self.mail_input.setText(candidato_data[1])
+                self.phone_input.setText(candidato_data[2])
+                self.puestos_dropdown.setText(candidato_data[8])
+                self.departamentos_dropdown.setText(candidato_data[9])
+                self.titulos_dropdown.setText(candidato_data[10])
+                self.estados_dropdown.setText(candidato_data[11])
+
+                # Deshabilitar la edición en los campos que no deben ser modificados
+                self.job_title_input.setReadOnly(True)
+                self.mail_input.setReadOnly(True)
+                self.puestos_dropdown.setEnabled(False)
+                self.departamentos_dropdown.setEnabled(False)
+                self.titulos_dropdown.setEnabled(False)
+
+                # Cargar el contenido del candidato en el CKEditor
+                self.load_ckeditor_with_content(candidato_data[6])
+            else:
+                # Mostrar un mensaje de error si no se encontraron datos para el candidato
+                error_dialog = QuickAlert(
+                    'error', 'Error', 'No se encontraron datos para el candidato.')
+
+            conn.close()
+        except psycopg2.Error as e:
+            print(f"Error al conectar a la base de datos: {e}")
+
+    def load_ckeditor_with_content(self, content):
+        # cargamos el contenido existente del candidato en el ckeditor
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
+            <script src="qrc:/qtwebchannel/qwebchannel.js"></script> <!-- Path to qwebchannel.js -->
+        </head>
+        <body>
+            <textarea name="editor1" id="editor1" rows="10" cols="80">
+                {content}
+            </textarea>
+            <script>
+                ClassicEditor
+                    .create(document.querySelector("#editor1"))
+                    .then(editor => {{
+                        window.editor = editor; // Save editor instance to window for access
+                    }})
+                    .catch(error => {{
+                        console.error('Error initializing CKEditor:', error);
+                    }});
+
+                // Create the QWebChannel object and connect to Python
+                var channel = new QWebChannel(qt.webChannelTransport, function(channel) {{
+                    window.pywebchannel = channel.objects.pywebchannel;
+                }});
+
+                function sendContentToPython() {{
+                    const editor = window.editor;
+                    if (editor) {{
+                        const content = editor.getData();
+                        pywebchannel.receiveContent(content);  // Send content to Python
+                    }} else {{
+                        console.error('Editor not initialized.');
+                    }}
+                }}
+            </script>
+        </body>
+        </html>
+        """
+        self.webview.setHtml(html_content)
 
 
+# Ejemplo de uso de la clase AddCandidato
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    show_add_candidato()
+    window = AddCandidato(candidato_id=1)
+    window.show()
     sys.exit(app.exec_())
