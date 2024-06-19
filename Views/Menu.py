@@ -9,6 +9,7 @@ from Calculadora import Calcu
 from Reclutamiento import Reclutamiento
 from CambioContrasena import ChangePasswordForm
 from Seguimiento_Candidato import Seguimiento
+from EmpleadoNominas import EmpleadoNominas
 
 
 class OpcionMenu(QPushButton):
@@ -68,6 +69,9 @@ class OpcionMenu(QPushButton):
             self.contenedor_layout.addWidget(widget)
         elif self.text() == "Cambiar contraseña":
             widget = ChangePasswordForm(self.id_user)
+            self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Empleados y Nominas":
+            widget = EmpleadoNominas()
             self.contenedor_layout.addWidget(widget)
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
@@ -237,6 +241,8 @@ class MenuForm(QWidget):
             widget = Seguimiento()
         elif self.active_widget_type == "Calcular prestaciones y descuentos":
             widget = Descuentos_Pestaciones()
+        elif self.active_widget_type == "Empleados y Nominas":
+            widget = EmpleadoNominas()
         else:
             widget = QWidget()
         self.contenedor_layout.addWidget(widget)
@@ -247,7 +253,7 @@ class MenuForm(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    form = MenuForm(id_user=1, rol="empleado")
+    form = MenuForm(id_user=1, rol="admin")
     form.showMaximized()
     form.show()
     sys.exit(app.exec_())
