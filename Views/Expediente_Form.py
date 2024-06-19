@@ -8,9 +8,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QGridLayout,
 )
-import threading
-import time
-from PyQt5.QtCore import Qt, QObject, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal
 from AddEmpleado import EmpleadoDialog
 
 

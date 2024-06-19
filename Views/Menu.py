@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 import xml.etree.ElementTree as ET
 from DescForm import Descriptor
 from Expediente_Form import Expediente
@@ -8,7 +8,7 @@ from Descuentos_Prestaciones import Descuentos_Pestaciones
 from Calculadora import Calcu
 from Reclutamiento import Reclutamiento
 from CambioContrasena import ChangePasswordForm
-
+from Asistencias import Asistencias
 
 class OpcionMenu(QPushButton):
     def __init__(self, text, contenedor_layout, id_user, parent=None):
@@ -65,6 +65,9 @@ class OpcionMenu(QPushButton):
             self.contenedor_layout.addWidget(widget)
         elif self.text() == "Cambiar contraseña":
             widget = ChangePasswordForm(self.id_user)
+            self.contenedor_layout.addWidget(widget)
+        elif self.text() == "Asistencias":
+            widget = Asistencias(self.id_user)
             self.contenedor_layout.addWidget(widget)
         else:
             # Agregar un widget vacío en caso de que no coincida con ninguna opción
@@ -241,7 +244,7 @@ class MenuForm(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    form = MenuForm(id_user=1, rol="empleado")
+    form = MenuForm(id_user=1, rol="admin")
     form.showMaximized()
     form.show()
     sys.exit(app.exec_())

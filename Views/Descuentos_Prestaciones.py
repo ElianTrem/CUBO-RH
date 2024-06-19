@@ -50,10 +50,6 @@ class Descuentos_Pestaciones(QWidget):
         self.salary_input.setFixedWidth(190)
         grid_layout.addWidget(self.salary_input, 2, 0)
 
-        self.periodicity_combo = DropDown("Mensual", ["Mensual", "Anual"], parent=self)
-        self.periodicity_combo.setFixedHeight(30)
-        grid_layout.addWidget(self.periodicity_combo, 2, 1)
-
         self.label_tiempo = QLabel("¿Cuánto tiempo tiene trabajando en la empresa?")
         self.label_tiempo.setStyleSheet("QLabel { margin: 0; padding: 0; }")
         grid_layout.addWidget(self.label_tiempo, 3, 0, 1, 2)
@@ -318,7 +314,6 @@ class Descuentos_Pestaciones(QWidget):
     def clear_fields(self):
         self.search_employee_input.clear()
         self.salary_input.setText("$0.00")
-        self.periodicity_combo.setText("Mensual")
         self.tiempo_combo.setText("1 a 3 años")
         self.date_edit.setVisible(False)
         self.label_tiempo.setVisible(False)
